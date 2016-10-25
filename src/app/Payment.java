@@ -13,9 +13,8 @@ public class Payment {
 			+ "Address(%7$s, %8$s, %9$s, %10$s, %11$s), Phone(%12$s), Since(%13$s), Credits(%14$s, %15$s, %16$s, %17$s)";
 	private static final String MESSAGE_PAYMENT = "Payment amount: %1$s";
 
-	// Databases
-	private static final String WAREHOUSEDISTRICT = "warehousedistrict";
-	private static final String CUSTOMER = "customer";
+	private static final String TABLE_WAREHOUSEDISTRICT = "WarehouseDistrict";
+	private static final String TABLE_CUSTOMER = "Customer";
 	
 	private DB database;
 	private DBCollection tableWarehouseDistrict;
@@ -25,8 +24,8 @@ public class Payment {
 	
 	public Payment(MongoDBConnect connect) {
 		this.database = connect.getDatabase();
-		this.tableWarehouseDistrict = database.getCollection(WAREHOUSEDISTRICT);
-		this.tableCustomer = database.getCollection(CUSTOMER);
+		this.tableWarehouseDistrict = database.getCollection(TABLE_WAREHOUSEDISTRICT);
+		this.tableCustomer = database.getCollection(TABLE_CUSTOMER);
 	}
 	
 	public void processPayment(final int w_id, final int d_id, 
@@ -70,11 +69,11 @@ public class Payment {
 				targetWarehouseDistrict.getString("w_zip")));
 		
 		System.out.println(String.format(MESSAGE_DISTRICT, 
-				targetWarehouseDistrict.getString("d_street_1"),
-				targetWarehouseDistrict.getString("d_street_2"),
-				targetWarehouseDistrict.getString("d_city"),
-				targetWarehouseDistrict.getString("d_state"),
-				targetWarehouseDistrict.getString("d_zip")));
+				targetWarehouseDistrict.getString("district.d_street_1"),
+				targetWarehouseDistrict.getString("district.d_street_2"),
+				targetWarehouseDistrict.getString("district.d_city"),
+				targetWarehouseDistrict.getString("district.d_state"),
+				targetWarehouseDistrict.getString("district.d_zip")));
 		
 		System.out.println(String.format(MESSAGE_PAYMENT, payment));
 	}
@@ -83,13 +82,14 @@ public class Payment {
 		// Where clause
 		BasicDBObject searchQuery = new BasicDBObject();
 		searchQuery.put("w_id", w_id);
-		searchQuery.put("d_id", d_id);
+		searchQuery.put("district.d_id", d_id);
 		
 		// Retrieve rows from table that satisfy where clause
 		DBCursor cursor = this.tableWarehouseDistrict.find(searchQuery);
 		if(cursor.hasNext()) {
 			targetWarehouseDistrict = (BasicDBObject) cursor.next();
 		}
+		cursor.close();
 	}
 	
 	private void selectCustomer(final int w_id, final int d_id, 
@@ -97,7 +97,7 @@ public class Payment {
 		// Where clause
 		BasicDBObject searchQuery = new BasicDBObject();
 		searchQuery.put("w_id", w_id);
-		searchQuery.put("d_id", d_id);
+		searchQuery.put("district.d_id", d_id);
 		searchQuery.put("c_id", c_id);
 
 		// Retrieve rows from table that satisfy where clause
@@ -105,20 +105,21 @@ public class Payment {
 		if(cursor.hasNext()) {
 			targetCustomer = (BasicDBObject) cursor.next();
 		}
+		cursor.close();
 	}
 	
 	private void updateWarehouseDistrict(final int w_id, final int d_id, final float payment) {
 		// Where clause
 		BasicDBObject query = new BasicDBObject();
 		query.put("w_id", w_id);
-		query.put("d_id", d_id);
+		query.put("district.d_id", d_id);
 		
 		// Set update attributes
 		double w_ytd = targetWarehouseDistrict.getDouble("w_ytd") + payment;
-		double d_ytd = targetWarehouseDistrict.getDouble("d_ytd") + payment;
+		double d_ytd = targetWarehouseDistrict.getDouble("district.d_ytd") + payment;
 		BasicDBObject newDocument = new BasicDBObject();
 		newDocument.put("w_ytd", w_ytd);
-		newDocument.put("d_ytd", d_ytd);
+		newDocument.put("district.d_ytd", d_ytd);
 
 		// Update
 		BasicDBObject update = new BasicDBObject();
@@ -131,7 +132,7 @@ public class Payment {
 		// Where clause
 		BasicDBObject query = new BasicDBObject();
 		query.put("w_id", w_id);
-		query.put("d_id", d_id);
+		query.put("district.d_id", d_id);
 		query.put("c_id", d_id);
 				
 		// Set update attributes
