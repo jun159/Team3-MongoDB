@@ -15,26 +15,32 @@ public class Payment {
 			+ "Address(%7$s, %8$s, %9$s, %10$s, %11$s), Phone(%12$s), Since(%13$s), Credits(%14$s, %15$s, %16$s, %17$s)";
 	private static final String MESSAGE_PAYMENT = "Payment amount: %1$s";
 
-	private static final String TABLE_WAREHOUSEDISTRICT = "WarehouseDistrict";
-	private static final String TABLE_CUSTOMER = "Customer";
+	private static final String TABLE_WAREHOUSE = "warehouse";
+	private static final String TABLE_DISTRICT = "district";
+	private static final String TABLE_CUSTOMER = "customer";
 	
 	private MongoDatabase database;
-	private MongoCollection<Document> tableWarehouseDistrict;
+	private MongoCollection<Document> tableWarehouse;
+	private MongoCollection<Document> tableDistrict;
 	private MongoCollection<Document> tableCustomer;
-	private Document targetWarehouseDistrict;
+	private Document targetWarehouse;
+	private Document targetDistrict;
 	private Document targetCustomer;
 	
 	public Payment(MongoDBConnect connect) {
 		this.database = connect.getDatabase();
-		this.tableWarehouseDistrict = database.getCollection(TABLE_WAREHOUSEDISTRICT);
+		this.tableWarehouse = database.getCollection(TABLE_WAREHOUSE);
+		this.tableDistrict = database.getCollection(TABLE_DISTRICT);
 		this.tableCustomer = database.getCollection(TABLE_CUSTOMER);
 	}
 	
 	public void processPayment(final int w_id, final int d_id, 
 			final int c_id, final float payment) {
-		selectWarehouseDistrict(w_id, d_id, payment);
-		updateWarehouseDistrict(w_id, d_id, payment);
-		selectCustomer(w_id, d_id, c_id, payment);
+		selectWarehouse(w_id);
+		selectDistrict(w_id, d_id);
+		updateWarehouse(w_id, payment);
+		updateDistrict(w_id, d_id, payment);
+		selectCustomer(w_id, d_id, c_id);
 		updateCustomer(w_id, d_id, c_id, payment);
 		outputResults(payment);
 	}
@@ -53,10 +59,10 @@ public class Payment {
 				targetCustomer.getString("c_street_2"),
 				targetCustomer.getString("c_city"),
 				targetCustomer.getString("c_state"),
-				targetCustomer.getString("c_zip"),
+				targetCustomer.getInteger("c_zip"),
 				
-				targetCustomer.getString("c_phone"),
-				targetCustomer.getDate("c_since"),
+				targetCustomer.getLong("c_phone"),
+				targetCustomer.getString("c_since"),
 				
 				targetCustomer.getString("c_credit"),
 				targetCustomer.getDouble("c_credit_lim"),
@@ -64,61 +70,89 @@ public class Payment {
 				targetCustomer.getDouble("c_balance")));
 		
 		System.out.println(String.format(MESSAGE_WAREHOUSE, 
-				targetWarehouseDistrict.getString("w_street_1"),
-				targetWarehouseDistrict.getString("w_street_2"),
-				targetWarehouseDistrict.getString("w_city"),
-				targetWarehouseDistrict.getString("w_state"),
-				targetWarehouseDistrict.getString("w_zip")));
+				targetWarehouse.getString("w_street_1"),
+				targetWarehouse.getString("w_street_2"),
+				targetWarehouse.getString("w_city"),
+				targetWarehouse.getString("w_state"),
+				targetWarehouse.getInteger("w_zip")));
 		
 		System.out.println(String.format(MESSAGE_DISTRICT, 
-				targetWarehouseDistrict.getString("district.d_street_1"),
-				targetWarehouseDistrict.getString("district.d_street_2"),
-				targetWarehouseDistrict.getString("district.d_city"),
-				targetWarehouseDistrict.getString("district.d_state"),
-				targetWarehouseDistrict.getString("district.d_zip")));
+				targetDistrict.getString("d_street_1"),
+				targetDistrict.getString("d_street_2"),
+				targetDistrict.getString("d_city"),
+				targetDistrict.getString("d_state"),
+				targetDistrict.getInteger("d_zip")));
 		
 		System.out.println(String.format(MESSAGE_PAYMENT, payment));
 	}
 	
-	private void selectWarehouseDistrict(final int w_id, final int d_id, final float payment) {
+	private void selectWarehouse(final int w_id) {
 		// Where clause
 		BasicDBObject searchQuery = new BasicDBObject();
 		searchQuery.put("w_id", w_id);
-		searchQuery.put("district.d_id", d_id);
 		
 		// Retrieve rows from table that satisfy where clause
-		MongoCursor<Document> cursor = this.tableWarehouseDistrict.find(searchQuery).iterator();
+		MongoCursor<Document> cursor = this.tableWarehouse.find(searchQuery).iterator();
 		if(cursor.hasNext()) {
-			targetWarehouseDistrict = cursor.next();
+			targetWarehouse = cursor.next();
+		} 
+		cursor.close();
+	}
+	
+	private void selectDistrict(final int w_id, final int d_id) {
+		// Where clause
+		BasicDBObject searchQuery = new BasicDBObject();
+		searchQuery.put("d_w_id", w_id);
+		searchQuery.put("d_id", d_id);
+		
+		// Retrieve rows from table that satisfy where clause
+		MongoCursor<Document> cursor = this.tableDistrict.find(searchQuery).iterator();
+		if(cursor.hasNext()) {
+			targetDistrict = cursor.next();
 		}
 		cursor.close();
 	}
 	
-	private void selectCustomer(final int w_id, final int d_id, 
-			final int c_id, final float payment) {
+	private void selectCustomer(final int w_id, final int d_id, final int c_id) {
 		// Where clause
 		BasicDBObject searchQuery = new BasicDBObject();
-		searchQuery.put("w_id", w_id);
-		searchQuery.put("district.d_id", d_id);
+		searchQuery.put("c_w_id", w_id);
+		searchQuery.put("c_d_id", d_id);
 		searchQuery.put("c_id", c_id);
 
 		// Retrieve rows from table that satisfy where clause
 		MongoCursor<Document> cursor = this.tableCustomer.find(searchQuery).iterator();
 		if(cursor.hasNext()) {
 			targetCustomer = cursor.next();
-		}
+		} 
 		cursor.close();
 	}
 	
-	private void updateWarehouseDistrict(final int w_id, final int d_id, final float payment) {
+	private void updateWarehouse(final int w_id, final float payment) {
 		// Where clause
 		BasicDBObject query = new BasicDBObject();
 		query.put("w_id", w_id);
-		query.put("district.d_id", d_id);
 		
 		// Set update attributes
-		double w_ytd = targetWarehouseDistrict.getDouble("w_ytd") + payment;
-		double d_ytd = targetWarehouseDistrict.getDouble("district.d_ytd") + payment;
+		double w_ytd = targetWarehouse.getDouble("w_ytd") + payment;
+		BasicDBObject newDocument = new BasicDBObject();
+		newDocument.put("w_ytd", w_ytd);
+
+		// Update
+		BasicDBObject update = new BasicDBObject();
+		update.put("$set", newDocument);
+		tableWarehouse.updateOne(query, update);
+	}
+	
+	private void updateDistrict(final int w_id, final int d_id, final float payment) {
+		// Where clause
+		BasicDBObject query = new BasicDBObject();
+		query.put("d_w_id", w_id);
+		query.put("d_id", d_id);
+		
+		// Set update attributes
+		double w_ytd = targetDistrict.getDouble("d_ytd") + payment;
+		double d_ytd = targetDistrict.getDouble("d_ytd") + payment;
 		BasicDBObject newDocument = new BasicDBObject();
 		newDocument.put("w_ytd", w_ytd);
 		newDocument.put("district.d_ytd", d_ytd);
@@ -126,15 +160,15 @@ public class Payment {
 		// Update
 		BasicDBObject update = new BasicDBObject();
 		update.put("$set", newDocument);
-		tableWarehouseDistrict.updateOne(query, update);
+		tableDistrict.updateOne(query, update);
 	}
 	
 	private void updateCustomer(final int w_id, final int d_id, 
 			final int c_id, final float payment) {		
 		// Where clause
 		BasicDBObject query = new BasicDBObject();
-		query.put("w_id", w_id);
-		query.put("district.d_id", d_id);
+		query.put("c_w_id", w_id);
+		query.put("c_d_id", d_id);
 		query.put("c_id", d_id);
 				
 		// Set update attributes
