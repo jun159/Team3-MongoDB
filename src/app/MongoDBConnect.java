@@ -1,19 +1,19 @@
 package app;
 
-import com.mongodb.DB;
 import com.mongodb.MongoClient;
+import com.mongodb.client.MongoDatabase;
 
 public class MongoDBConnect {
 	
 	private MongoClient client;
-	private DB database;
+	private MongoDatabase database;
 	
 	public MongoDBConnect(String node, int port, String database) {
 		this.client = new MongoClient(node, port);
-		this.database = client.getDB(database);	
+		this.database = client.getDatabase(database);
 	}
 	
-	public DB getDatabase() {
+	public MongoDatabase getDatabase() {
 		return this.database;
 	}
 	
