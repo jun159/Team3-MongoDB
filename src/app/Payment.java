@@ -1,9 +1,11 @@
 package app;
 
+import org.bson.Document;
+
 import com.mongodb.BasicDBObject;
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
+import com.mongodb.client.MongoDatabase;
 
 public class Payment {
 	
@@ -16,11 +18,11 @@ public class Payment {
 	private static final String TABLE_WAREHOUSEDISTRICT = "WarehouseDistrict";
 	private static final String TABLE_CUSTOMER = "Customer";
 	
-	private DB database;
-	private DBCollection tableWarehouseDistrict;
-	private DBCollection tableCustomer;
-	private BasicDBObject targetWarehouseDistrict;
-	private BasicDBObject targetCustomer;
+	private MongoDatabase database;
+	private MongoCollection<Document> tableWarehouseDistrict;
+	private MongoCollection<Document> tableCustomer;
+	private Document targetWarehouseDistrict;
+	private Document targetCustomer;
 	
 	public Payment(MongoDBConnect connect) {
 		this.database = connect.getDatabase();
@@ -39,9 +41,9 @@ public class Payment {
 	
 	private void outputResults(float payment) {
 		System.out.println(String.format(MESSAGE_CUSTOMER, 
-				targetCustomer.getInt("c_w_id"),
-				targetCustomer.getInt("c_d_id"),
-				targetCustomer.getInt("c_id"),
+				targetCustomer.getInteger("c_w_id"),
+				targetCustomer.getInteger("c_d_id"),
+				targetCustomer.getInteger("c_id"),
 				
 				targetCustomer.getString("c_first"),
 				targetCustomer.getString("c_middle"),
@@ -85,9 +87,9 @@ public class Payment {
 		searchQuery.put("district.d_id", d_id);
 		
 		// Retrieve rows from table that satisfy where clause
-		DBCursor cursor = this.tableWarehouseDistrict.find(searchQuery);
+		MongoCursor<Document> cursor = this.tableWarehouseDistrict.find(searchQuery).iterator();
 		if(cursor.hasNext()) {
-			targetWarehouseDistrict = (BasicDBObject) cursor.next();
+			targetWarehouseDistrict = cursor.next();
 		}
 		cursor.close();
 	}
@@ -101,9 +103,9 @@ public class Payment {
 		searchQuery.put("c_id", c_id);
 
 		// Retrieve rows from table that satisfy where clause
-		DBCursor cursor = this.tableCustomer.find(searchQuery);
+		MongoCursor<Document> cursor = this.tableCustomer.find(searchQuery).iterator();
 		if(cursor.hasNext()) {
-			targetCustomer = (BasicDBObject) cursor.next();
+			targetCustomer = cursor.next();
 		}
 		cursor.close();
 	}
@@ -124,7 +126,7 @@ public class Payment {
 		// Update
 		BasicDBObject update = new BasicDBObject();
 		update.put("$set", newDocument);
-		tableWarehouseDistrict.update(query, update);
+		tableWarehouseDistrict.updateOne(query, update);
 	}
 	
 	private void updateCustomer(final int w_id, final int d_id, 
@@ -138,7 +140,7 @@ public class Payment {
 		// Set update attributes
 		double c_balance = targetCustomer.getDouble("c_balance") - payment;
 		double c_ytd_payment = targetCustomer.getDouble("c_ytd_payment") + payment;
-		int c_payment_cnt = targetCustomer.getInt("c_payment_cnt") + 1;
+		int c_payment_cnt = targetCustomer.getInteger("c_payment_cnt") + 1;
 		BasicDBObject newDocument = new BasicDBObject();
 		newDocument.put("c_balance", c_balance);
 		newDocument.put("c_ytd_payment", c_ytd_payment);
@@ -147,6 +149,6 @@ public class Payment {
 		// Update
 		BasicDBObject update = new BasicDBObject();
 		update.put("$set", newDocument);
-		tableCustomer.update(query, update);
+		tableCustomer.updateOne(query, update);
 	}
 }
