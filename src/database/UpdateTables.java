@@ -1,10 +1,15 @@
 package database;
 
+import org.bson.Document;
+
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
+import com.mongodb.client.MongoDatabase;
 
 public class UpdateTables {
 
@@ -13,45 +18,40 @@ public class UpdateTables {
 		         // To connect to mongodb server
 		        MongoClient mongoClient = new MongoClient( "localhost" , 27017 );
 		         // Now connect to your databases
-				DB db = mongoClient.getDB( "team3" );
+				MongoDatabase db = mongoClient.getDatabase( "team3" );
 		        
 				//find all district
-		        DBCollection districtTable = db.getCollection("district");
-		        DBCollection warehouseTable = db.getCollection("warehouse");
+		        MongoCollection<Document> districtTable = db.getCollection("district");
+		        MongoCollection<Document> warehouseTable = db.getCollection("warehouse");       
 		        
-		        
-		        DBCursor cursor = districtTable.find();
+		        MongoCursor<Document> cursor = districtTable.find().iterator();
 		         while (cursor.hasNext()) {
 		        	
-		        	BasicDBObject districtObject = (BasicDBObject) cursor.next();
+		        	Document districtObject = cursor.next();
 		        	System.out.println(districtObject.getString("d_w_id"));
 		        	
 		        	BasicDBObject district = new BasicDBObject();
-		        	district.put("d_id", districtObject.getInt("d_id"));
+		        	district.put("d_id", districtObject.getInteger("d_id"));
 		        	district.put("d_name", districtObject.getString("d_name"));
 		        	district.put("d_street_1", districtObject.getString("d_street_1"));
 		        	district.put("d_street_2", districtObject.getString("d_street_2"));
 		        	district.put("d_city", districtObject.getString("d_city"));
 	        		district.put("d_state", districtObject.getString("d_state"));
-	        		district.put("d_zip", districtObject.getInt("d_zip"));
+	        		district.put("d_zip", districtObject.getInteger("d_zip"));
 	        		district.put("d_tax", districtObject.getDouble("d_tax"));
 	        		district.put("d_ytd", districtObject.getDouble("d_ytd"));
-	        		district.put("d_next_o_id", districtObject.getInt("d_next_o_id"));
+	        		district.put("d_next_o_id", districtObject.getInteger("d_next_o_id"));
 		        	  
 		        	//find the ware house record
 		        	BasicDBObject searchWarehouse = new BasicDBObject();
-		        	searchWarehouse.put("w_id", districtObject.getInt("d_w_id"));
+		        	searchWarehouse.put("w_id", districtObject.getInteger("d_w_id"));
 		        	
 		        	BasicDBObject updateObj = new BasicDBObject();
 		        	updateObj.put("$push", new BasicDBObject("district",district));
 		        	
 //		        	BasicDBObject updateObj = new BasicDBObject();
 //		        	updateObj.put("district", insertData);
-		        	warehouseTable.update(searchWarehouse, updateObj);
-		        	
-		        	
-		        	
-		        	
+		        	warehouseTable.updateOne(searchWarehouse, updateObj);
 		        	
 //		        	DBCursor cursor2 = warehouseTable.find(searchWarehouse);
 //		        	while (cursor2.hasNext()) {
@@ -70,16 +70,14 @@ public class UpdateTables {
 //		        		
 //		        	}
 		        	
-		        	
 		         }
 		         
-		        
-		    
-		        
-		        
 		         System.out.println("Connect to database successfully");
+		         
 		      }catch(Exception e){
+		    	  
 		         System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+		         
 		      }
 
 	}
