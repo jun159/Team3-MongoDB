@@ -8,9 +8,6 @@ package app;
 import org.bson.Document;
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
@@ -148,8 +145,8 @@ public class Payment {
 		
 		// Update
 		BasicDBObject searchQuery = new BasicDBObject().append("w_id", w_id); 
-    	tableWarehouseDistrict.updateOne(searchQuery, newWarehouse);
-    	tableWarehouseDistrict.updateOne(searchQuery, new BasicDBObject("$set", newDistrict));
+		tableWarehouseDistrict.updateOne(searchQuery, newWarehouse);
+		tableWarehouseDistrict.updateOne(searchQuery, new BasicDBObject("$set", newDistrict));
 	}
 	
 	private void updateCustomer(final int w_id, final int d_id, 
