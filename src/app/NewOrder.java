@@ -5,6 +5,7 @@
 
 package app;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import org.bson.Document;
@@ -67,6 +68,13 @@ public class NewOrder {
 		selectWarehouseDistrict(w_id, d_id);
 		selectCustomer(w_id, d_id, c_id);
 		updateWarehouseDistrict(w_id, d_id);
+		
+		if(DEBUG) {
+			System.out.println("Before d:  " + targetDistrict.get("d_next_o_id"));
+			selectWarehouseDistrict(w_id, d_id);
+			System.out.println("After d:   " + targetDistrict.get("d_next_o_id"));
+		}
+		
 		insertOrder(w_id, d_id, c_id, num_items, supplier_warehouse);
 		insertOrderLines(w_id, d_id, num_items, item_number, supplier_warehouse, quantity);
 		computeTotal();
@@ -108,8 +116,9 @@ public class NewOrder {
 		MongoCursor<Document> cursor = this.tableWarehouseDistrict.find(searchQuery).iterator();
 		while(cursor.hasNext()) {
 			targetWarehouse = cursor.next();
-			targetDistrict = (Document) targetWarehouse.get("" + d_id);
-//			System.out.println("district: " + targetDistrict.getInteger("d_id"));
+			ArrayList<Document> districtList = (ArrayList<Document>) targetWarehouse.get("district");
+			targetDistrict = districtList.get(d_id - 1);
+			System.out.println(targetDistrict.toJson());
 		} 
 		cursor.close();
 	}
@@ -162,11 +171,13 @@ public class NewOrder {
 	private void updateWarehouseDistrict(final int w_id, final int d_id) {
 		// Set new d_next_o_id
 		double d_next_o_id = targetDistrict.getDouble("d_next_o_id") + 1;
-		BasicDBObject newDistrict = new BasicDBObject(d_id + ".d_next_o_id", d_next_o_id);
+		BasicDBObject setDistrict = new BasicDBObject();
+		setDistrict.append("district." + (d_id - 1) + ".d_next_o_id", d_next_o_id);
+		BasicDBObject newDistrict = new BasicDBObject("$set", setDistrict);
 		
 		// Update
 		BasicDBObject searchQuery = new BasicDBObject().append("w_id", w_id); 
-		tableWarehouseDistrict.updateOne(searchQuery, new BasicDBObject("$set", newDistrict));
+		tableWarehouseDistrict.updateOne(searchQuery, newDistrict);
 	}
 	
 	private void updateStock(final int w_id, final int d_id, final int i_id, final int warehouse, final int quantity) {	

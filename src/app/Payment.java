@@ -5,6 +5,8 @@
 
 package app;
 
+import java.util.ArrayList;
+
 import org.bson.Document;
 
 import com.mongodb.BasicDBObject;
@@ -113,7 +115,9 @@ public class Payment {
 		MongoCursor<Document> cursor = this.tableWarehouseDistrict.find(searchQuery).iterator();
 		while(cursor.hasNext()) {
 			targetWarehouse = cursor.next();
-			targetDistrict = (Document) targetWarehouse.get("" + d_id);
+			ArrayList<Document> districtList = (ArrayList<Document>) targetWarehouse.get("district");
+			targetDistrict = districtList.get(d_id - 1);
+			System.out.println(targetDistrict.toJson());
 		} 
 		cursor.close();
 	}
@@ -141,12 +145,14 @@ public class Payment {
 		
 		// Set new d_ytd
 		double d_ytd = targetDistrict.getDouble("d_ytd") + payment;
-		BasicDBObject newDistrict = new BasicDBObject(d_id + ".d_ytd", d_ytd);
+		BasicDBObject setDistrict = new BasicDBObject();
+		setDistrict.append("district." + (d_id - 1) + ".d_ytd", d_ytd);
+		BasicDBObject newDistrict = new BasicDBObject("$set", setDistrict);
 		
 		// Update
 		BasicDBObject searchQuery = new BasicDBObject().append("w_id", w_id); 
 		tableWarehouseDistrict.updateOne(searchQuery, newWarehouse);
-		tableWarehouseDistrict.updateOne(searchQuery, new BasicDBObject("$set", newDistrict));
+		tableWarehouseDistrict.updateOne(searchQuery, newDistrict);
 	}
 	
 	private void updateCustomer(final int w_id, final int d_id, 
