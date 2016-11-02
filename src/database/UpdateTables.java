@@ -104,7 +104,7 @@ public class UpdateTables {
      
         	stockTable.updateMulti(searchStock, updateObj);
          }
-        stockTable.rename("sotckItem");
+        stockTable.rename("stockItem");
 	}
 	
 }
