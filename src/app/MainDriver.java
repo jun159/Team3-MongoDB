@@ -38,7 +38,7 @@ public class MainDriver {
 	
 	public MainDriver(String database, String xactID) {
 		this.connect = new MongoDBConnect("127.0.0.1", 27017, "team3");
-//		this.newOrderXact = new NewOrder(connect);
+		this.newOrderXact = new NewOrder(connect);
 		this.paymentXact = new Payment(connect);
 //		this.deliveryXact = new Delivery(connect);
 //		this.orderStatusXact = new OrderStatus(connect);
@@ -63,9 +63,9 @@ public class MainDriver {
 				String[] args = line.split(",");
 				
 				switch(line.charAt(0)) {
-//					case XACT_NEWORDER:
-//						runNewOrderXact(args, br);
-//						break;
+					case XACT_NEWORDER:
+						runNewOrderXact(args, br);
+						break;
 		            case XACT_PAYMENT:
 		               	runPaymentXact(args);
 		                break;
@@ -105,21 +105,21 @@ public class MainDriver {
         int num_items = Integer.parseInt(args[4]);
         int[] item_number = new int[num_items];
         int[] supplier_warehouse = new int[num_items];
-        double[] quantity = new double[num_items];
+        int[] quantity = new int[num_items];
         
         try {
 	        for (int i = 0; i < num_items; i++) {
 	        	String[] items = br.readLine().split(",");
 	            item_number[i] = Integer.parseInt(items[0]);
 	            supplier_warehouse[i] = Integer.parseInt(items[1]);
-	            quantity[i] = Double.parseDouble(items[2]);
+	            quantity[i] = Integer.parseInt(items[2]);
 	        }
         } catch(IOException e) {
         	System.err.println(MESSAGE_ERROR_READ);
         }
         
-//        newOrderXact.processNewOrder(w_id, d_id, c_id, num_items, item_number, 
-//        		supplier_warehouse, quantity);
+        newOrderXact.processNewOrder(w_id, d_id, c_id, num_items, item_number, 
+        		supplier_warehouse, quantity);
 	}
 	
 	private void runPaymentXact(String[] args) {
