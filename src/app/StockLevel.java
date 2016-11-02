@@ -7,6 +7,9 @@ import static com.mongodb.client.model.Aggregates.*;
 import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Projections.*;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +19,7 @@ import com.mongodb.client.MongoDatabase;
 
 public class StockLevel {
 
-	private static final String MESSAGE_START = "=============Stock Level=============\nLast '%d' orders in (w_id = %d, d_id = %d)";
+	private static final String MESSAGE_START = "=============Stock Level=============\nLast '%d' orders in (w_id = %d, d_id = %d)\n";
 	private static final String MESSAGE_OUTPUT = "Number of items below stock threshold (%d) : %d\n";
 	private static final String TABLE_WAREHOUSE = "warehouse";
 	private static final String TABLE_ORDERLINE = "orderline";
@@ -46,13 +49,19 @@ public class StockLevel {
 
 		int nextOrderID = getNextOrderNum(w_id, d_id);
 		int startOrderID = nextOrderID - numOfLastOrder;
-
-		printStart(numOfLastOrder, w_id, d_id);
-
-		ArrayList<Document> itemID_ArrayList = getSetOfItemID(d_id, w_id, startOrderID, nextOrderID);
-		long count_below_threshold = countItem(itemID_ArrayList, stockThreshold, w_id);
-
-		printOutput(stockThreshold, count_below_threshold);
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+		
+		try {
+			bw.write(String.format(MESSAGE_START, numOfLastOrder, w_id, d_id));
+			ArrayList<Document> itemID_ArrayList = getSetOfItemID(d_id, w_id, startOrderID, nextOrderID);
+			long count_below_threshold = countItem(itemID_ArrayList, stockThreshold, w_id);
+			bw.write(String.format(MESSAGE_OUTPUT, stockThreshold, count_below_threshold));
+			bw.flush();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
 	//====================================================================================
@@ -107,22 +116,9 @@ public class StockLevel {
 		for(int i = 0; i < itemID_ArrayList.size(); i++) {
 			itemID = itemID_ArrayList.get(i).getInteger("ol_i_id");
 			count += tableStock.count(and(eq("s_w_id", w_id), eq("s_i_id", itemID), lt("s_quantity", stockThreshold)));
-			System.out.println(count);
 		}
 
 		return count;
 	}
-
-	//=====================================================================================
-	// Print methods
-	//=====================================================================================
-
-	public void printStart(int numOfLastOrder, int w_id, int d_id) {
-		System.out.println(String.format(MESSAGE_START, numOfLastOrder, w_id, d_id));
-	}
-
-	public void printOutput(int stockThreshold, long count) {
-		System.out.println(String.format(MESSAGE_OUTPUT, stockThreshold, count));
-	}
-
+	
 }

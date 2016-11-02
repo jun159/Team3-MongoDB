@@ -37,24 +37,29 @@ public class TopBalance {
 		this.tableWarehouse = database.getCollection(TABLE_WAREHOUSE);
 	}
 
-	public void processTopBalance() throws IOException{
+	public void processTopBalance() {
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 		String c_name, warehouseDistrictName;
 		Double c_balance;
+		
+		try {
+			bw.write("======Processing TopBalance transaction========\n");
+			ArrayList<Document> customers = selectTopBalance();
+			for(int i = 0; i< customers.size(); i++) {
+				Document customer = customers.get(i);
+				c_name = customer.getString("c_first") + " " + customer.getString("c_middle") + " " + customer.getString("c_last");
+				c_balance = customer.getDouble("c_balance");
+				warehouseDistrictName = getWarehouseDistrictName(customer.getInteger("c_w_id"), customer.getInteger("c_d_id"));
+				bw.write(String.format(MESSAGE_OUTPUT, c_name, c_balance, warehouseDistrictName));
+			}
 
-		bw.write("======Processing TopBalance transaction========\n");
-		ArrayList<Document> customers = selectTopBalance();
-		for(int i = 0; i< customers.size(); i++) {
-			Document customer = customers.get(i);
-			c_name = customer.getString("c_first") + " " + customer.getString("c_middle") + " " + customer.getString("c_last");
-			c_balance = customer.getDouble("c_balance");
-			warehouseDistrictName = getWarehouseDistrictName(customer.getInteger("c_w_id"), customer.getInteger("c_d_id"));
-			bw.write(String.format(MESSAGE_OUTPUT, c_name, c_balance, warehouseDistrictName));
+			bw.write("\n");
+			bw.flush();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-
-		bw.write("\n");
-		bw.flush();
-
+		
 	}
 
 	private String getWarehouseDistrictName(int c_w_id, int c_d_id) {

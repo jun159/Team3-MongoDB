@@ -8,6 +8,9 @@ import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Projections.*;
 import static com.mongodb.client.model.Sorts.*;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +20,7 @@ import com.mongodb.client.MongoDatabase;
 
 public class PopularItem {
 
+	private static final String MESSAGE_START = "\nProcessing PopularItem transaction...\n";
 	private static final int ZERO = 0;
 	private static final String MESSAGE_DISTRICT_ID = "District Identifier : (%d, %d)\n";
 	private static final String MESSAGE_LAST_ORDER = "# Last orders examined : %d\n";
@@ -44,8 +48,6 @@ public class PopularItem {
 	private MongoCollection<Document> tableCustomer;
 	private MongoCollection<Document> tableWarehouse;
 
-	private String output = "";
-
 	public PopularItem(MongoDBConnect connect) {
 		this.database = connect.getDatabase();
 		this.tableWarehouse = database.getCollection(TABLE_WAREHOUSE);
@@ -57,47 +59,46 @@ public class PopularItem {
 	}
 
 	public void processPopularItem(int w_id, int d_id, int numOfLastOrder) {
-		output = String.format(MESSAGE_DISTRICT_ID, w_id, d_id);
-		output += String.format(MESSAGE_LAST_ORDER, numOfLastOrder);
-		ArrayList<Document> orders = getOrders(w_id, d_id, numOfLastOrder);
-		System.out.println("\nProcessing PopularItem transaction...");
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-		for(int i = 0; i < orders.size(); i++) {
-			Document order = orders.get(i);
-			int o_id = order.getInteger("o_id");
-			output += String.format(MESSAGE_OID_DATETIME, o_id, order.getString("o_entry_d"));
-			output += String.format(MESSAGE_CUSTOMER_NAME, getCustomerName(w_id, d_id, order.getInteger("o_c_id")));
+		try {
+			bw.write(MESSAGE_START);
+			bw.write(String.format(MESSAGE_DISTRICT_ID, w_id, d_id));
+			bw.write(String.format(MESSAGE_LAST_ORDER, numOfLastOrder));
+			ArrayList<Document> orders = getOrders(w_id, d_id, numOfLastOrder);
 
-			ArrayList<Document> orderLine = getPopularItem(o_id, w_id, d_id);
-			for(int j = 0; j < orderLine.size(); j++) {
-				Document ol = orderLine.get(j);
-				int i_id = ol.getInteger("ol_i_id");
-				String msg = String.format(MESSAGE_POPULAR_ITEM, i_id, ol.getInteger("ol_quantity"));
-				output += msg;
-				addToDistinctItemArrayList(String.valueOf(i_id));
+			for(int i = 0; i < orders.size(); i++) {
+				Document order = orders.get(i);
+				int o_id = order.getInteger("o_id");
+				bw.write(String.format(MESSAGE_OID_DATETIME, o_id, order.getString("o_entry_d")));
+				bw.write(String.format(MESSAGE_CUSTOMER_NAME, getCustomerName(w_id, d_id, order.getInteger("o_c_id"))));
+
+				ArrayList<Document> orderLine = getPopularItem(o_id, w_id, d_id);
+				for(int j = 0; j < orderLine.size(); j++) {
+					Document ol = orderLine.get(j);
+					int i_id = ol.getInteger("ol_i_id");
+					bw.write(String.format(MESSAGE_POPULAR_ITEM, i_id, ol.getInteger("ol_quantity")));
+					addToDistinctItemArrayList(String.valueOf(i_id));
+				}
 			}
+			
+			//====================================================================================
+			// Output %order of distinct items
+			//====================================================================================
+			
+			float percentage;
+
+			for(int i = 0; i < distinctItemArrayList.size(); i++) {
+				percentage = ( (float) countOrder.get(i) / (float) numOfLastOrder) * 100;
+				bw.write(String.format(MESSAGE_PERCENTAGE, percentage, distinctItemArrayList.get(i)));
+			}
+			
+			bw.flush();
+
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-
-		System.out.println(output);
-		findPercentageOfOrder(numOfLastOrder);
-	}
-
-	//====================================================================================
-	// Output %order of distinct items
-	//====================================================================================
-
-	private void findPercentageOfOrder(int totalOrderSize) {
-		float percentage;
-		System.out.println();
-
-		for(int i = 0; i < distinctItemArrayList.size(); i++) {
-			percentage = ( (float) countOrder.get(i) / (float) totalOrderSize) * 100;
-			printPercentageOrder(distinctItemArrayList.get(i), percentage);
-		}
-	}
-	
-	public void printPercentageOrder(String itemName, float percentage) {
-		System.out.println(String.format(MESSAGE_PERCENTAGE, percentage, itemName));
+		
 	}
 
 	//====================================================================================
@@ -144,11 +145,11 @@ public class PopularItem {
 		pipeline = new ArrayList<Bson>();
 		pipeline.add(match(and(eq("ol_w_id", w_id), eq("ol_d_id", d_id), eq("ol_o_id", o_id), eq("ol_quantity", max_ol_quantity))));
 		pipeline.add(project(fields(include("ol_i_id", "ol_quantity"), excludeId())));
-		
+
 		// Special modifier
 		pipeline.add(limit(1));
 		// ====================
-		
+
 		ArrayList<Document> items = tableOrderLine.aggregate(pipeline).into(new ArrayList<Document>());
 
 		return items;
