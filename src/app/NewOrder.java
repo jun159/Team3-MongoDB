@@ -27,39 +27,35 @@ public class NewOrder {
 	private static final String MESSAGE_ORDER_ITEM = "Order item: ItemNumber(%1$s), ItemName(%2$s), "
 			+ "Warehouse(%3$s), Quantity(%4$s), Amount(%5$s), TotalQuantity(%6$s)";
 	
-	private static final String TABLE_WAREHOUSE = "warehouse";
+	private static final String TABLE_WAREHOUSEDISTRICT = "warehouseDistrict";
 	private static final String TABLE_CUSTOMER = "customer";
 	private static final String TABLE_ORDER = "orders";
 	private static final String TABLE_ORDERLINE = "orderline";
-	private static final String TABLE_STOCK = "stock";
-	private static final String TABLE_ITEM = "item";
+	private static final String TABLE_STOCK = "stockItem";
 	
-	private static final boolean DEBUG = true;
+	private static final boolean DEBUG = false;
 	
 	private MongoDatabase database;
 	private MongoCollection<Document> tableWarehouseDistrict;
 	private MongoCollection<Document> tableCustomer;
 	private MongoCollection<Document> tableOrder;
 	private MongoCollection<Document> tableOrderline;
-	private MongoCollection<Document> tableStock;
-	private MongoCollection<Document> tableItem;
+	private MongoCollection<Document> tableStockItem;
 	private Document targetWarehouse;
 	private Document targetDistrict;
 	private Document targetCustomer;
-	private Document targetStock;
-	private Document targetItem;
+	private Document targetStockItem;
 	private double total_amount = 0;
 	private Date o_entry_id;
 	private int quantity = 0;
 	
 	public NewOrder(MongoDBConnect connect) {
 		this.database = connect.getDatabase();
-		this.tableWarehouseDistrict = database.getCollection(TABLE_WAREHOUSE);
+		this.tableWarehouseDistrict = database.getCollection(TABLE_WAREHOUSEDISTRICT);
 		this.tableCustomer = database.getCollection(TABLE_CUSTOMER);
 		this.tableOrder = database.getCollection(TABLE_ORDER);
 		this.tableOrderline = database.getCollection(TABLE_ORDERLINE);
-		this.tableStock = database.getCollection(TABLE_STOCK);
-		this.tableItem = database.getCollection(TABLE_ITEM);
+		this.tableStockItem = database.getCollection(TABLE_STOCK);
 	}
 	
 	public void processNewOrder(final int w_id, final int d_id, final int c_id, 
@@ -118,7 +114,7 @@ public class NewOrder {
 			targetWarehouse = cursor.next();
 			ArrayList<Document> districtList = (ArrayList<Document>) targetWarehouse.get("district");
 			targetDistrict = districtList.get(d_id - 1);
-			System.out.println(targetDistrict.toJson());
+//			System.out.println(targetDistrict.toJson());
 		} 
 		cursor.close();
 	}
@@ -146,24 +142,10 @@ public class NewOrder {
 		searchQuery.put("s_i_id", i_id);
 
 		// Retrieve rows from table that satisfy where clause
-		MongoCursor<Document> cursor = this.tableStock.find(searchQuery).iterator();
+		MongoCursor<Document> cursor = this.tableStockItem.find(searchQuery).iterator();
 		if(cursor.hasNext()) {
-			targetStock = (Document) cursor.next();
+			targetStockItem = (Document) cursor.next();
 //			System.out.println("stock: " + targetStock.getInteger("s_w_id"));
-		} 
-		cursor.close();
-	}
-	
-	private void selectItem(final int i_id) {			
-		// Where clause
-		BasicDBObject searchQuery = new BasicDBObject();
-		searchQuery.put("i_id", i_id);
-
-		// Retrieve rows from table that satisfy where clause
-		MongoCursor<Document> cursor = this.tableItem.find(searchQuery).iterator();
-		if(cursor.hasNext()) {
-			targetItem = (Document) cursor.next();
-//			System.out.println("item: " + targetItem.getInteger("i_id"));
 		} 
 		cursor.close();
 	}
@@ -181,13 +163,13 @@ public class NewOrder {
 	}
 	
 	private void updateStock(final int w_id, final int d_id, final int i_id, final int warehouse, final int quantity) {	
-		int s_quantity = targetStock.getInteger("s_quantity") - quantity;
+		int s_quantity = targetStockItem.getInteger("s_quantity") - quantity;
 		if(s_quantity == 10) {
 			s_quantity += 100;
 		}
 		
-		double s_ytd = targetStock.getDouble("s_ytd") + quantity;
-		int s_order_cnt = targetStock.getInteger("s_order_cnt") + 1;
+		double s_ytd = targetStockItem.getDouble("s_ytd") + quantity;
+		int s_order_cnt = targetStockItem.getInteger("s_order_cnt") + 1;
 		
 		int s_remote_cnt = 0;
 		if(warehouse != w_id) {
@@ -248,8 +230,7 @@ public class NewOrder {
 		for(int i = 0; i < num_items; i++) {
 			selectStock(w_id, d_id);
 			updateStock(w_id, d_id, item_number[i], supplier_warehouse[i], quantity[i]);
-			selectItem(item_number[i]);
-			double item_price = targetItem.getDouble("i_price");
+			double item_price = targetStockItem.getDouble("i_price");
 			double item_amount = quantity[i] * item_price;		
 			total_amount = total_amount + item_amount;
 			String d_dist_id = String.format("s_dist_%1$s", String.format("%02d", d_id));
@@ -264,13 +245,13 @@ public class NewOrder {
 			document.put("ol_amount", item_amount);
 			document.put("ol_supply_w_id", supplier_warehouse[i]);
 			document.put("ol_quantity",  quantity[i]);
-			document.put("ol_dist_info", targetStock.getString(d_dist_id));
+			document.put("ol_dist_info", targetStockItem.getString(d_dist_id));
 
 			tableOrderline.insertOne(document);
 			
 			System.out.println(String.format(MESSAGE_ORDER_ITEM, 
 					item_number[i],
-					targetItem.getString("i_name"),
+					targetStockItem.getString("i_name"),
 					supplier_warehouse[i],
 					quantity[i],
 					item_amount,
