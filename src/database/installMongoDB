@@ -1,0 +1,11 @@
+//enter the temp folder download the mongodb
+curl -O https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-3.2.10.tgz
+
+//extract the download file
+tar -zxf mongodb-linux-x86_64-3.2.10.tgz
+
+//in mongodb-linux-x86_64-3.2.10 make a folder
+mkdir -p data/db
+
+//start the mongodb
+mongod --dbpath /temp/mongodb-linux-x86_64-3.2.10/data/db
