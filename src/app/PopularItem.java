@@ -29,7 +29,6 @@ public class PopularItem {
 	private static final String TABLE_ORDER = "orders";
 	private static final String TABLE_ORDERLINE = "orderline";
 	private static final String TABLE_CUSTOMER = "customer";
-	private static final String TABLE_ITEM = "item";
 
 	// ArrayLists: (1) name of popular item (2) number of orders containing the item.
 	private ArrayList<String> distinctItemArrayList;
@@ -42,7 +41,6 @@ public class PopularItem {
 	private MongoDatabase database;
 	private MongoCollection<Document> tableOrder;
 	private MongoCollection<Document> tableOrderLine;
-	private MongoCollection<Document> tableItem;
 	private MongoCollection<Document> tableCustomer;
 	private MongoCollection<Document> tableWarehouse;
 
@@ -54,7 +52,6 @@ public class PopularItem {
 		this.tableOrder= database.getCollection(TABLE_ORDER);
 		this.tableOrderLine = database.getCollection(TABLE_ORDERLINE);
 		this.tableCustomer = database.getCollection(TABLE_CUSTOMER);
-		this.tableItem = database.getCollection(TABLE_ITEM);
 		distinctItemArrayList = new ArrayList<String>();
 		countOrder = new ArrayList<Integer>();
 	}
@@ -64,7 +61,7 @@ public class PopularItem {
 		output += String.format(MESSAGE_LAST_ORDER, numOfLastOrder);
 		ArrayList<Document> orders = getOrders(w_id, d_id, numOfLastOrder);
 		System.out.println("\nProcessing PopularItem transaction...");
-		
+
 		for(int i = 0; i < orders.size(); i++) {
 			Document order = orders.get(i);
 			int o_id = order.getInteger("o_id");
@@ -72,16 +69,59 @@ public class PopularItem {
 			output += String.format(MESSAGE_CUSTOMER_NAME, getCustomerName(w_id, d_id, order.getInteger("o_c_id")));
 
 			ArrayList<Document> orderLine = getPopularItem(o_id, w_id, d_id);
-			for(int i1 = 0; i1 < orderLine.size(); i1++) {
-				System.out.println(orderLine.get(i1));
+			for(int j = 0; j < orderLine.size(); j++) {
+				Document ol = orderLine.get(j);
+				int i_id = ol.getInteger("ol_i_id");
+				String msg = String.format(MESSAGE_POPULAR_ITEM, i_id, ol.getInteger("ol_quantity"));
+				output += msg;
+				addToDistinctItemArrayList(String.valueOf(i_id));
 			}
-
-			System.out.println();
-
-			output += orderLine;
 		}
 
-		System.out.println(output);	
+		System.out.println(output);
+		findPercentageOfOrder(numOfLastOrder);
+	}
+
+	//====================================================================================
+	// Output %order of distinct items
+	//====================================================================================
+
+	private void findPercentageOfOrder(int totalOrderSize) {
+		float percentage;
+		System.out.println();
+
+		for(int i = 0; i < distinctItemArrayList.size(); i++) {
+			percentage = ( (float) countOrder.get(i) / (float) totalOrderSize) * 100;
+			printPercentageOrder(distinctItemArrayList.get(i), percentage);
+		}
+	}
+	
+	public void printPercentageOrder(String itemName, float percentage) {
+		System.out.println(String.format(MESSAGE_PERCENTAGE, percentage, itemName));
+	}
+
+	//====================================================================================
+	// Track % of order for a distinct item
+	//====================================================================================
+
+	private void addToDistinctItemArrayList(String itemName) {
+		if(distinctItemArrayList.contains(itemName)) {
+			updatePopularItemList(itemName);
+		}
+		else {
+			insertIntoPopularItemList(itemName);
+		}
+	}
+
+	private void insertIntoPopularItemList(String itemName) {
+		distinctItemArrayList.add(itemName);
+		countOrder.add(1);
+	}
+
+	public void updatePopularItemList(String itemName){
+		int index;
+		index = distinctItemArrayList.indexOf(itemName);
+		countOrder.set(index, countOrder.get(index) + 1);
 	}
 
 	//====================================================================================
@@ -104,6 +144,11 @@ public class PopularItem {
 		pipeline = new ArrayList<Bson>();
 		pipeline.add(match(and(eq("ol_w_id", w_id), eq("ol_d_id", d_id), eq("ol_o_id", o_id), eq("ol_quantity", max_ol_quantity))));
 		pipeline.add(project(fields(include("ol_i_id", "ol_quantity"), excludeId())));
+		
+		// Special modifier
+		pipeline.add(limit(1));
+		// ====================
+		
 		ArrayList<Document> items = tableOrderLine.aggregate(pipeline).into(new ArrayList<Document>());
 
 		return items;
