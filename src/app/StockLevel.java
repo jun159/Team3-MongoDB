@@ -19,43 +19,60 @@ import com.mongodb.client.MongoDatabase;
 
 public class StockLevel {
 
-	private static final String MESSAGE_START = "=============Stock Level=============\nLast '%d' orders in (w_id = %d, d_id = %d)\n";
+	private static final String MESSAGE_START = "=============Stock Level=============\nLast '%d' orders o_id {'%d' to '%d'} in (w_id = %d, d_id = %d)\n";
 	private static final String MESSAGE_OUTPUT = "Number of items below stock threshold (%d) : %d\n";
-	private static final String TABLE_WAREHOUSE = "warehouse";
-	private static final String TABLE_ORDERLINE = "orderline";
-	private static final String TABLE_STOCK = "stock";
+	private static final String TABLE_WAREHOUSE_DISTRICT = "warehouseDistrict";
+	private static final String TABLE_ORDER_ORDERLINE = "orderOrderLine";
+	private static final String TABLE_STOCK_ITEM = "stockItem";
 
 	//====================================================================================
 	// Preparing for session
 	//====================================================================================
 
 	private MongoDatabase database;
-	private MongoCollection<Document> tableWarehouse;
-	private MongoCollection<Document> tableOrderLine;
-	private MongoCollection<Document> tableStock;
+	private MongoCollection<Document> tableWarehouseDistrict;
+	private MongoCollection<Document> tableOrder_OrderLine;
+	private MongoCollection<Document> tableStockItem;
 
 	public StockLevel(MongoDBConnect connect) {
 		this.database = connect.getDatabase();
-		this.tableWarehouse = database.getCollection(TABLE_WAREHOUSE);
-		this.tableOrderLine = database.getCollection(TABLE_ORDERLINE);
-		this.tableStock = database.getCollection(TABLE_STOCK);
+		this.tableWarehouseDistrict = database.getCollection(TABLE_WAREHOUSE_DISTRICT);
+		this.tableOrder_OrderLine = database.getCollection(TABLE_ORDER_ORDERLINE);
+		this.tableStockItem = database.getCollection(TABLE_STOCK_ITEM);
 	}
 
 	//====================================================================================
 	// Processing for StockLevel transaction
 	//====================================================================================
 
+	@SuppressWarnings("unchecked")
 	public void processStockLevel(int w_id, int d_id, int stockThreshold, int numOfLastOrder) {
-
+		int count = 0;
+		int ol_i_id = 0;
 		int nextOrderID = getNextOrderNum(w_id, d_id);
 		int startOrderID = nextOrderID - numOfLastOrder;
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 		
 		try {
-			bw.write(String.format(MESSAGE_START, numOfLastOrder, w_id, d_id));
-			ArrayList<Document> itemID_ArrayList = getSetOfItemID(d_id, w_id, startOrderID, nextOrderID);
-			long count_below_threshold = countItem(itemID_ArrayList, stockThreshold, w_id);
-			bw.write(String.format(MESSAGE_OUTPUT, stockThreshold, count_below_threshold));
+			bw.write(String.format(MESSAGE_START, numOfLastOrder, startOrderID, (nextOrderID - 1), w_id, d_id));
+			
+			List<Bson> pipeline = new ArrayList<Bson>();
+			pipeline.add(match(and(eq("o_w_id", w_id), eq("o_d_id", d_id), gte("o_id", startOrderID), lt("o_id", nextOrderID))));
+			pipeline.add(project(fields(include("orderLine"), excludeId())));
+			
+			ArrayList<Document> orderArrayList = tableOrder_OrderLine.aggregate(pipeline).into(new ArrayList<Document>());
+			
+			for(int i = 0; i < orderArrayList.size(); i++) {
+				Document order = orderArrayList.get(i);
+				ArrayList<Document> orderLine = (ArrayList<Document>) order.get("orderLine");
+				for(int j = 0; j < orderLine.size(); j++) {
+					Document ol = orderLine.get(j);
+					ol_i_id = ol.getInteger("ol_i_id");
+					count += tableStockItem.count(and(eq("s_w_id", w_id), eq("s_i_id", ol_i_id), lt("s_quantity", stockThreshold)));
+				}	
+			}
+			
+			bw.write(String.format(MESSAGE_OUTPUT, stockThreshold, count));
 			bw.flush();
 			
 		} catch (IOException e) {
@@ -79,7 +96,7 @@ public class StockLevel {
 		pipeline.add(match(eq("district.d_id", d_id)));
 		pipeline.add(project(fields(include("district.d_next_o_id"), excludeId())));
 		
-		MongoCursor<Document> cursor = tableWarehouse.aggregate(pipeline).iterator();
+		MongoCursor<Document> cursor = tableWarehouseDistrict.aggregate(pipeline).iterator();
 		
 		while(cursor.hasNext()){
 			Document currentDoc = (Document) cursor.next().get("district");
@@ -87,38 +104,6 @@ public class StockLevel {
 		}
 
 		return nextOrderNum;
-	}
-
-	//=====================================================================================
-	// QUERY: Find items in order-line within [startOrderID,end OrderID) matching (W ID,D ID)
-	//=====================================================================================
-
-	private ArrayList<Document> getSetOfItemID(int d_id, int w_id, int startOrderID, int nextOrderID) {
-
-		ArrayList<Document> itemArrayList = tableOrderLine
-				.find(and(eq("ol_w_id", w_id), eq("ol_d_id", d_id), gte("ol_o_id", startOrderID), lt("ol_o_id", nextOrderID)))
-				.projection(include("ol_i_id"))
-				.into(new ArrayList<Document>());
-
-		return itemArrayList;
-
-	}
-
-	//=====================================================================================
-	// QUERY: Count the number of items below the given threshold T
-	//=====================================================================================
-
-	private long countItem(ArrayList<Document> itemID_ArrayList, int stockThreshold, int w_id) {
-
-		int count = 0;
-		int itemID = 0;
-
-		for(int i = 0; i < itemID_ArrayList.size(); i++) {
-			itemID = itemID_ArrayList.get(i).getInteger("ol_i_id");
-			count += tableStock.count(and(eq("s_w_id", w_id), eq("s_i_id", itemID), lt("s_quantity", stockThreshold)));
-		}
-
-		return count;
 	}
 	
 }
