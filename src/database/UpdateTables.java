@@ -27,12 +27,11 @@ public class UpdateTables {
 	
 	public static void main(String[] args) {
 		UpdateTables upData = new UpdateTables();
-//		upData.updateWareHouse();
-//		upData.updateStockItem();
-//		upData.updateCustomer();
-	
-//		upData.updateOrderLine();
-//		upData.updateOrder();
+		upData.updateWareHouse();
+		upData.updateStockItem();
+		upData.updateCustomer();
+		upData.updateOrderLine();
+		upData.updateOrder();
 		upData.combineOrderOrderLine();
 		
         System.out.println("End of the function");
@@ -163,6 +162,48 @@ public class UpdateTables {
 		
 	}
 
+//	OrderLine: Adding {i_name}
+	public void updateOrderLine(){
+		db.getCollection("orderline").createIndex(new BasicDBObject("ol_w_id",1));
+		db.getCollection("orderline").createIndex(new BasicDBObject("ol_d_id",1));
+		db.getCollection("orderline").createIndex(new BasicDBObject("ol_o_id",1));
+		
+		//Temporary index
+		db.getCollection("orderline").createIndex(new BasicDBObject("ol_i_id",1));
+		
+        DBCollection itemTable = db.getCollection("item");
+        DBCollection orderLineTable = db.getCollection("orderline");
+        
+        DBCursor cursor = itemTable.find();
+        //disable timeout
+        cursor.addOption(com.mongodb.Bytes.QUERYOPTION_NOTIMEOUT);
+        
+        while (cursor.hasNext()) {
+        	BasicDBObject itemObject = (BasicDBObject) cursor.next();
+        	System.out.println(itemObject.get("i_id"));
+    		BasicDBObject item = new BasicDBObject();
+    		
+    		item.append("i_name", itemObject.getString("i_name"));
+    		
+   
+        	BasicDBObject searchOrderLine = new BasicDBObject();
+        	searchOrderLine.append("ol_i_id", itemObject.getInt("i_id"));
+       
+    
+        	BasicDBObject updateObj = new BasicDBObject();
+        	updateObj.append("$set", item);
+        	
+        	orderLineTable.updateMulti(searchOrderLine, updateObj);
+        	     	
+         }
+        
+        //drop the index
+        db.getCollection("orderline").dropIndex("ol_i_id_1");
+	}
+	
+	
+	
+	
 //	Orders: Adding {c_first, c_middle, c_last}
 	public void updateOrder(){
 		db.getCollection("orders").createIndex(new BasicDBObject("o_w_id",1));
@@ -205,44 +246,7 @@ public class UpdateTables {
         
 	}
 	
-//	OrderLine: Adding {i_name}
-	public void updateOrderLine(){
-		db.getCollection("orderline").createIndex(new BasicDBObject("ol_w_id",1));
-		db.getCollection("orderline").createIndex(new BasicDBObject("ol_d_id",1));
-		db.getCollection("orderline").createIndex(new BasicDBObject("ol_o_id",1));
-		
-		//Temporary index
-		db.getCollection("orderline").createIndex(new BasicDBObject("ol_i_id",1));
-		
-        DBCollection itemTable = db.getCollection("item");
-        DBCollection orderLineTable = db.getCollection("orderline");
-        
-        DBCursor cursor = itemTable.find();
-        //disable timeout
-        cursor.addOption(com.mongodb.Bytes.QUERYOPTION_NOTIMEOUT);
-        
-        while (cursor.hasNext()) {
-        	BasicDBObject itemObject = (BasicDBObject) cursor.next();
-        	System.out.println(itemObject.get("i_id"));
-    		BasicDBObject item = new BasicDBObject();
-    		
-    		item.append("i_name", itemObject.getString("i_name"));
-    		
-   
-        	BasicDBObject searchOrderLine = new BasicDBObject();
-        	searchOrderLine.append("ol_i_id", itemObject.getInt("i_id"));
-       
-    
-        	BasicDBObject updateObj = new BasicDBObject();
-        	updateObj.append("$set", item);
-        	
-        	orderLineTable.updateMulti(searchOrderLine, updateObj);
-        	     	
-         }
-        
-        //drop the index
-        db.getCollection("orderline").dropIndex("ol_i_id_1");
-	}
+
 	
 	public void combineOrderOrderLine(){
 		//create the index
@@ -259,21 +263,23 @@ public class UpdateTables {
         
         while (cursor.hasNext()) {
         	BasicDBObject orderLineObject = (BasicDBObject) cursor.next();
-        	System.out.println("orderLineTable: ol_w_id "+ orderLineObject.getString("ol_w_id")
+        	System.out.println("combineOrderLineTable: ol_w_id "+ orderLineObject.getString("ol_w_id")
         			+" ol_o_id " +orderLineObject.getString("ol_o_id"));
         	
-        	BasicDBObject district = new BasicDBObject();
-        	district.put("ol_w_id", orderLineObject.getInt("ol_w_id"));
-        	district.put("ol_d_id", orderLineObject.getInt("ol_d_id"));
-        	district.put("ol_o_id", orderLineObject.getInt("ol_o_id"));
-        	district.put("ol_number", orderLineObject.getInt("ol_number"));
-        	district.put("ol_i_id", orderLineObject.getInt("ol_i_id"));
-    		district.put("ol_delivery_d", orderLineObject.getString("ol_delivery_d"));
-    		district.put("ol_amount", orderLineObject.getDouble("ol_amount"));
-    		district.put("ol_supply_w_id", orderLineObject.getInt("ol_supply_w_id"));
-    		district.put("ol_quantity", orderLineObject.getInt("ol_quantity"));
-    		district.put("ol_dist_info", orderLineObject.getString("ol_dist_info"));
-        	  
+        	BasicDBObject orderLine = new BasicDBObject();
+        	orderLine.put("ol_w_id", orderLineObject.getInt("ol_w_id"));
+        	orderLine.put("ol_d_id", orderLineObject.getInt("ol_d_id"));
+        	orderLine.put("ol_o_id", orderLineObject.getInt("ol_o_id"));
+        	orderLine.put("ol_number", orderLineObject.getInt("ol_number"));
+        	orderLine.put("ol_i_id", orderLineObject.getInt("ol_i_id"));
+        	orderLine.put("ol_delivery_d", orderLineObject.getString("ol_delivery_d"));
+        	orderLine.put("ol_amount", orderLineObject.getDouble("ol_amount"));
+        	orderLine.put("ol_supply_w_id", orderLineObject.getInt("ol_supply_w_id"));
+        	orderLine.put("ol_quantity", orderLineObject.getInt("ol_quantity"));
+        	orderLine.put("ol_dist_info", orderLineObject.getString("ol_dist_info"));
+    		
+        	orderLine.put("i_name", orderLineObject.getString("i_name"));
+
        
         	BasicDBObject searchOrder = new BasicDBObject();
         	searchOrder.put("o_w_id", orderLineObject.getInt("ol_w_id"));
@@ -281,7 +287,7 @@ public class UpdateTables {
         	searchOrder.put("o_id", orderLineObject.getInt("ol_o_id"));
         	
         	BasicDBObject updateObj = new BasicDBObject();
-		    updateObj.put("$push", new BasicDBObject("orderLine",district));
+		    updateObj.put("$push", new BasicDBObject("orderLine",orderLine));
 //        	updateObj.put("$set", new BasicDBObject(districtObject.getString("d_id"),district));
         	
         	
