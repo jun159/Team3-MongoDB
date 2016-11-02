@@ -22,10 +22,10 @@ public class Payment {
 			+ "Address(%7$s, %8$s, %9$s, %10$s, %11$s), Phone(%12$s), Since(%13$s), Credits(%14$s, %15$s, %16$s, %17$s)";
 	private static final String MESSAGE_PAYMENT = "Payment amount: %1$s";
 
-	private static final String TABLE_WAREHOUSE = "warehouse";
+	private static final String TABLE_WAREHOUSEDISTRICT = "warehouseDistrict";
 	private static final String TABLE_CUSTOMER = "customer";
 	
-	private static final boolean DEBUG = true;
+	private static final boolean DEBUG = false;
 	
 	private MongoDatabase database;
 	private MongoCollection<Document> tableWarehouseDistrict;
@@ -36,7 +36,7 @@ public class Payment {
 	
 	public Payment(MongoDBConnect connect) {
 		this.database = connect.getDatabase();
-		this.tableWarehouseDistrict = database.getCollection(TABLE_WAREHOUSE);
+		this.tableWarehouseDistrict = database.getCollection(TABLE_WAREHOUSEDISTRICT);
 		this.tableCustomer = database.getCollection(TABLE_CUSTOMER);
 	}
 	
