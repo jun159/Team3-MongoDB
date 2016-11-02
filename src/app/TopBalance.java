@@ -1,7 +1,6 @@
 package app;
 
 import static com.mongodb.client.model.Aggregates.*;
-import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Projections.*;
 import static com.mongodb.client.model.Sorts.*;
 
@@ -13,7 +12,6 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 
 public class TopBalance {
@@ -21,7 +19,6 @@ public class TopBalance {
 	private static final String MESSAGE_OUTPUT = "C_NAME: {%s} C_BALANCE: {%2f} W_NAME: {%s} D_NAME: {%s}\n";
 
 	private static final String TABLE_CUSTOMER= "customer";
-	private static final String TABLE_WAREHOUSE = "warehouse";
 
 	//====================================================================================
 	// Preparing for session
@@ -29,12 +26,10 @@ public class TopBalance {
 
 	private MongoDatabase database;
 	private MongoCollection<Document> tableCustomer;
-	private MongoCollection<Document> tableWarehouse;
 
 	public TopBalance(MongoDBConnect connect){
 		this.database = connect.getDatabase();
 		this.tableCustomer = database.getCollection(TABLE_CUSTOMER);
-		this.tableWarehouse = database.getCollection(TABLE_WAREHOUSE);
 	}
 
 	public void processTopBalance() {
