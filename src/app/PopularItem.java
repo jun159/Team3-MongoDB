@@ -147,7 +147,7 @@ public class PopularItem {
 		pipeline.add(project(fields(include("ol_i_id", "ol_quantity"), excludeId())));
 
 		// Special modifier
-		pipeline.add(limit(1));
+//		pipeline.add(limit(1));
 		// ====================
 
 		ArrayList<Document> items = tableOrderLine.aggregate(pipeline).into(new ArrayList<Document>());
