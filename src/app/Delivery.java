@@ -1,7 +1,11 @@
 package app;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+
+
 
 
 
@@ -42,78 +46,107 @@ public class Delivery {
 //	private PreparedStatement orderLineSelect;
 //	private PreparedStatement customerSelect;
 //	private PreparedStatement customerUpdate;
+	private MongoDatabase database;
+	private MongoCollection<Document> tableWarehouseDistrict;
+	private MongoCollection<Document> tableCustomer;
+	private static String TABLE_WAREHOUSEDISTRICT ="warehouseDistrict";
+	private static String TABLE_ORDERORDERLINE ="orderOrderLine";
+	private static String TABLE_CUSTOMER ="customer";
 	
-	
-	public Delivery() {}
+	public Delivery(MongoDBConnect connect) {
+		this.database = connect.getDatabase();
+//		this.tableWarehouseDistrict = database.getCollection(TABLE_WAREHOUSEDISTRICT);
+//		this.tableCustomer = database.getCollection(TABLE_CUSTOMER);
+	}
 	public static void main (String arg[]) {
-		Delivery deli = new Delivery();
-		deli.processDelivery();
+//		Delivery deli = new Delivery();
+		
 	}
 	
 	
-	public void  processDelivery() {
+	public void  processDelivery(int W_ID, int CARRIER_ID) {
 		   try{
-//		          To connect to mongodb server
-		        MongoClient mongoClient = new MongoClient( "localhost" , 27017 );
-		         // Now connect to your databases
-				DB db = mongoClient.getDB( "team3" );
-		         
-		        DBCollection table = db.getCollection("warehouseDistrict");
-		        BasicDBObject orderSearchQuery = new BasicDBObject();
+//			   database.getCollection("orderOrderLine").createIndex(new BasicDBObject("o_carrier_id",1));
+			   
+			   for(int districtNO = 1;districtNO<11;districtNO++){
+				   
+			   		MongoCollection<Document> orderOrderLineTable = database.getCollection(TABLE_ORDERORDERLINE);
+			   		MongoCollection<Document> customerTable = database.getCollection(TABLE_CUSTOMER);
+			   		
 		        
-
-		        orderSearchQuery.append("district.d_id", 1);
-//		         DBCursor cursor = table.find();
-		         DBCursor cursor = table.find(orderSearchQuery);
+			   		BasicDBObject orderSearchQuery = new BasicDBObject();
+			   		orderSearchQuery.append("o_w_id", W_ID);
+			   		orderSearchQuery.append("o_d_id", districtNO);
+			   		orderSearchQuery.append("o_carrier_id", "null");
+			   		
+			   		//a) find the smallest o_id
+			   		MongoCursor<Document> cursor = orderOrderLineTable.find(orderSearchQuery)
+			   				.sort(new BasicDBObject("o_id",1)).limit(1).iterator();
 		         
-		         
-		         
-		         while (cursor.hasNext()) {
-//		         	System.out.println(cursor.next());
-		         	BasicDBObject districtObject = (BasicDBObject) cursor.next();
-		        	System.out.println(districtObject.getString("district.d_name"));
-		         }
-		        
-		        
-//		        for(int i = 0; i<10; i++){
-//			         orderSearchQuery.append("o_w_id", 1);
-////			         DBCursor cursor = table.find();
-//			         DBCursor cursor = table.find(searchQuery);
-//
-//			         while (cursor.hasNext()) {
-//			         	System.out.println(cursor.next());
-////			         	BasicDBObject districtObject = (BasicDBObject) cursor.next();
-////			        	System.out.println(districtObject.getString("district"));
-//			        	
-//			        	
-//			         }
-//		        }
-	
-			   	
-//			   MongoClient client = new MongoClient("localhost" , 27017);
-//			   MongoDatabase database = client.getDatabase("team3");
-//			   MongoCollection<Document> table = database.getCollection("warehouseDistrict");
-//			   
-//			   BasicDBObject searchQuery = new BasicDBObject();
-//			   searchQuery.put("district.d_id", 1);
-//			   searchQuery.put("w_id", 1);
-//			   
-//			   MongoCursor<Document> cursor = table.find(searchQuery).iterator();
-//			   
-//		         while (cursor.hasNext()) {
-//		        	 
-////		         	System.out.println(cursor.next().get("district"));
-//		        	List<Document> districtObject =  (List<Document>) cursor.next().get("district");
-//		        	Iterator<Document> doc = districtObject.iterator();
-//		        	while(doc.hasNext()){
-//		        		Document temp = doc.next();
-//		        		if(temp.getInteger("d_id") == 1){
-//		        			System.out.println(temp.get("d_ytd"));
-//		        		}
-//		        	}   		      
-//		         }
-		         
-		         System.out.println("Connect to database successfully");
+			   		int smallestID = 0;
+			   		int orderLineNumber =0;
+			   		Double sum_OL_AMOUNT = 0.0;
+			   		int customerID = 0;
+			   		while (cursor.hasNext()) {
+			   			Document orderDocument = cursor.next();
+			   			smallestID = orderDocument.getInteger("o_id");
+			   			customerID = orderDocument.getInteger("o_c_id");
+			   			ArrayList<Document> count = (ArrayList<Document>) orderDocument.get("orderLine");
+			   			orderLineNumber = count.size();
+			   			Iterator<Document> orderLineItor = count.iterator();
+			   			while(orderLineItor.hasNext()){
+			   				sum_OL_AMOUNT += orderLineItor.next().getDouble("ol_amount");
+			   			}
+			   		}
+			   		
+//			   		System.out.println("smallestID "+smallestID);
+//			   		System.out.println("o_carrier_id "+CARRIER_ID);
+//			   		System.out.println("sum_OL_AMOUNT "+sum_OL_AMOUNT);
+//			   		System.out.println("customerID "+customerID);
+//			   		System.out.println(" ");
+			   		//b) update the order and oderLine
+			   		BasicDBObject  searchOrder = new BasicDBObject();
+			   		searchOrder.append("o_w_id",W_ID );
+			   		searchOrder.append("o_d_id",districtNO );
+			   		searchOrder.append("o_id", smallestID);
+			   		
+			   		
+			   		Date now = new Date();
+			   		BasicDBObject  orderItem = new BasicDBObject();
+			   		orderItem.append("o_carrier_id",CARRIER_ID);
+			   		for(int i=0; i<orderLineNumber;i++){
+			   			orderItem.append("orderLine."+i+".ol_delivery_d",now);
+			   		}
+			   		
+			   		BasicDBObject  updateObj = new BasicDBObject ();
+			   		updateObj.append("$set", orderItem);
+		        	
+		        	orderOrderLineTable.updateOne(searchOrder, updateObj);
+		        	
+		        	
+		        	//d)Update customer c_balance and c_delivery_cnt
+		        	
+		        	BasicDBObject  searchCustomer = new BasicDBObject();
+		        	searchCustomer.append("c_w_id",W_ID );
+		        	searchCustomer.append("c_d_id",districtNO );
+		        	searchCustomer.append("c_id",customerID );
+			   		
+			   		BasicDBObject  customerItem = new BasicDBObject ();
+			   		customerItem.append("c_balance", sum_OL_AMOUNT);
+			   		customerItem.append("c_delivery_cnt", 1);
+//			   		customerItem.append("$inc", new BasicDBObject().append("c_balance", sum_OL_AMOUNT));
+//			   		customerItem.append("$inc", new BasicDBObject().append("c_delivery_cnt", 1));
+			   		
+			   		
+			   		BasicDBObject  customerUpdateObj = new BasicDBObject ();
+			   		customerUpdateObj.append("$inc", customerItem);
+		        	
+		        	
+			   		customerTable.updateOne(searchCustomer, customerUpdateObj);
+		        	
+			   	}
+		    
+			   
 		      }catch(Exception e){
 		         System.err.println( e.getClass().getName() + ": " + e.getMessage() );
 		      }
