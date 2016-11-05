@@ -70,7 +70,7 @@ cd
 
 # Bulk load data
 echo -ne "\nLoading warehouse, district, customer, order, orderline and stock data into MongoDB..."
-cd /temp/mongodb-linux-x86_64-3.2.10/bin
+cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 
 if [ $1 == 8 ]
 then
