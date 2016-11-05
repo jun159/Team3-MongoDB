@@ -82,8 +82,8 @@ f) To benchmark D40 datasets with 40 clients, run `bash benchmark.sh 40 40`.</br
 
 ### 8. Stop server when not using
 ```
-ps -ax | grep cassandra //Look for the pid in the output “XXXX pts/0    Sl     0:19 java”
-kill XXXX
+killall -9 mongo
+killall -9 mongod
 ```
 
 ## References
