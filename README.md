@@ -23,10 +23,12 @@ Create / Configure .bash_profile file
 ```
 cd
 vim .bash_profile
+===================================================
 # Add these lines:
 export PATH=/temp/apache-maven-3.3.9/bin:$PATH
 export LANG=en_US.utf-8
 export LC_ALL=en_US.utf-8
+===================================================
 shift + z + z // save the file
 source .bash_profile
 ```
