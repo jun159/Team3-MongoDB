@@ -5,16 +5,16 @@
 Cassandra benchmarking measures the performance of different data modeling with different set of nodes and clients. With comparison of different data modeling, this allows us to find out the optimized database schema design for Cassandra.
 
 ## Instructions
-### 1. Install MongoDB RHEL 7 (>=3.2.0)
+### 1. Install MongoDB RHEL 7 (>=3.2.0) in temp folder
 ```
-cd /temp // Install in temp folder
+cd /temp
 wget https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-rhel70-3.2.10.tgz
 tar zxvf mongodb-linux-x86_64-rhel70-3.2.10.tgz
 ```
 
-### 2. Install Maven(>=3.3.9)
+### 2. Install Maven(>=3.3.9) in temp folder
 ```
-cd /temp // Install in temp folder
+cd /temp
 wget http://download.nus.edu.sg/mirror/apache/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
 tar xzvf apache-maven-3.3.9-bin.tar.gz
 ```
@@ -29,15 +29,15 @@ export PATH=/temp/apache-maven-3.3.9/bin:$PATH
 export LANG=en_US.utf-8
 export LC_ALL=en_US.utf-8
 ===================================================
-shift + z + z // save the file
+shift + z + z
 source .bash_profile
 ```
 Configure server settings
 ```
 mkdir /temp/data
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
-screen // Create a screen
-./mongod --dbpath /temp/data // set path to data folder
+screen
+./mongod --dbpath /temp/data // Start server with chosen datapath
 ctrl+A, D // Exit the screen
 ```
 
