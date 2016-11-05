@@ -5,11 +5,11 @@
 Cassandra benchmarking measures the performance of different data modeling with different set of nodes and clients. With comparison of different data modeling, this allows us to find out the optimized database schema design for Cassandra.
 
 ## Instructions
-### 1. Install Datastax(>=3.9.0)
+### 1. Install MongoDB RHEL 7 (>=3.2.0)
 ```
 cd /temp // Install in temp folder
-wget http://downloads.datastax.com/datastax-ddc/datastax-ddc-3.9.0-bin.tar.gz
-tar zxvf datastax-ddc-3.9.0-bin.tar.gz
+wget https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-rhel70-3.2.10.tgz
+tar zxvf mongodb-linux-x86_64-rhel70-3.2.10.tgz
 ```
 
 ### 2. Install Maven(>=3.3.9)
