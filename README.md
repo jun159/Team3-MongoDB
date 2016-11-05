@@ -61,7 +61,7 @@ Save the file and restart the cassandra server.
 ### 5. Download project
 Before running the scripts, make sure that the project is in the home folder. Change directory to the project folder to prepare for benchmarking.
 ```
-cd Team3-Cassandra 
+cd Team3-MongoDB 
 ```
 
 ### 6. Bulkload data
@@ -80,10 +80,10 @@ d) To benchmark D40 datasets with 10 clients, run `bash benchmark.sh 40 10`.</br
 e) To benchmark D40 datasets with 20 clients, run `bash benchmark.sh 40 20`.</br>
 f) To benchmark D40 datasets with 40 clients, run `bash benchmark.sh 40 40`.</br>
 
-### 8. Stop server when not using
+### 8. To stop server
 ```
-ps -ax | grep cassandra //Look for the pid in the output “XXXX pts/0    Sl     0:19 java”
-kill XXXX
+killall -9 mongo
+killall -9 mongod
 ```
 
 ## References
