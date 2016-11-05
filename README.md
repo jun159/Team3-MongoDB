@@ -61,7 +61,7 @@ Save the file and restart the cassandra server.
 ### 5. Download project
 Before running the scripts, make sure that the project is in the home folder. Change directory to the project folder to prepare for benchmarking.
 ```
-cd Team3-Cassandra 
+cd Team3-MongoDB 
 ```
 
 ### 6. Bulkload data
