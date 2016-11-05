@@ -5,8 +5,12 @@
 
 package app;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.bson.Document;
 
@@ -29,8 +33,7 @@ public class NewOrder {
 	
 	private static final String TABLE_WAREHOUSEDISTRICT = "warehouseDistrict";
 	private static final String TABLE_CUSTOMER = "customer";
-	private static final String TABLE_ORDER = "orders";
-	private static final String TABLE_ORDERLINE = "orderline";
+	private static final String TABLE_ORDER = "orderOrderLine";
 	private static final String TABLE_STOCK = "stockItem";
 	
 	private static final boolean DEBUG = false;
@@ -39,12 +42,12 @@ public class NewOrder {
 	private MongoCollection<Document> tableWarehouseDistrict;
 	private MongoCollection<Document> tableCustomer;
 	private MongoCollection<Document> tableOrder;
-	private MongoCollection<Document> tableOrderline;
 	private MongoCollection<Document> tableStockItem;
 	private Document targetWarehouse;
 	private Document targetDistrict;
 	private Document targetCustomer;
 	private Document targetStockItem;
+	private BufferedWriter writer;
 	private double total_amount = 0;
 	private Date o_entry_id;
 	private int quantity = 0;
@@ -54,8 +57,8 @@ public class NewOrder {
 		this.tableWarehouseDistrict = database.getCollection(TABLE_WAREHOUSEDISTRICT);
 		this.tableCustomer = database.getCollection(TABLE_CUSTOMER);
 		this.tableOrder = database.getCollection(TABLE_ORDER);
-		this.tableOrderline = database.getCollection(TABLE_ORDERLINE);
 		this.tableStockItem = database.getCollection(TABLE_STOCK);
+		this.writer = new BufferedWriter(new OutputStreamWriter(System.out));
 	}
 	
 	public void processNewOrder(final int w_id, final int d_id, final int c_id, 
@@ -66,41 +69,47 @@ public class NewOrder {
 		updateWarehouseDistrict(w_id, d_id);
 		
 		if(DEBUG) {
-			System.out.println("Before d:  " + targetDistrict.get("d_next_o_id"));
+			System.err.println("Before d:  " + targetDistrict.get("d_next_o_id"));
 			selectWarehouseDistrict(w_id, d_id);
-			System.out.println("After d:   " + targetDistrict.get("d_next_o_id"));
+			System.err.println("After d:   " + targetDistrict.get("d_next_o_id"));
 		}
 		
-		insertOrder(w_id, d_id, c_id, num_items, supplier_warehouse);
-		insertOrderLines(w_id, d_id, num_items, item_number, supplier_warehouse, quantity);
+		selectStock(w_id, d_id);
+		insertOrder(w_id, d_id, c_id, num_items, item_number, supplier_warehouse, quantity);
 		computeTotal();
 		outputResults(num_items);
 	}
 	
 	private void outputResults(float num_items) {
-		System.out.println(String.format(MESSAGE_CUSTOMER, 
-				targetCustomer.getInteger("c_w_id"),
-				targetCustomer.getInteger("c_d_id"),
-				targetCustomer.getInteger("c_id"),
-				targetCustomer.getString("c_last"),
-				targetCustomer.getString("c_credit"),
-				targetCustomer.getDouble("c_discount")));
-				
-		System.out.println(String.format(MESSAGE_WAREHOUSE, 
-				targetWarehouse.getDouble("w_tax")));
-				
-		System.out.println(String.format(MESSAGE_DISTRICT, 
-				targetDistrict.getDouble("d_tax")));
-		
-		System.out.println(String.format(MESSAGE_ORDER, 
-				targetDistrict.getDouble("d_next_o_id"),
-				o_entry_id));
-										
-		System.out.println(String.format(MESSAGE_NUM_ITEMS,
-				num_items));
-												
-		System.out.println(String.format(MESSAGE_TOTAL_AMOUNT,
-				total_amount));
+		try {
+			writer.write(String.format(MESSAGE_CUSTOMER, 
+					targetCustomer.getInteger("c_w_id"),
+					targetCustomer.getInteger("c_d_id"),
+					targetCustomer.getInteger("c_id"),
+					targetCustomer.getString("c_last"),
+					targetCustomer.getString("c_credit"),
+					targetCustomer.getDouble("c_discount")) + "\n");
+			
+			writer.write(String.format(MESSAGE_WAREHOUSE, 
+					targetWarehouse.getDouble("w_tax") + "\n"));
+					
+			writer.write(String.format(MESSAGE_DISTRICT, 
+					targetDistrict.getDouble("d_tax") + "\n"));
+			
+			writer.write(String.format(MESSAGE_ORDER, 
+					targetDistrict.getInteger("d_next_o_id"),
+					o_entry_id) + "\n");
+											
+			writer.write(String.format(MESSAGE_NUM_ITEMS,
+					num_items) + "\n");
+													
+			writer.write(String.format(MESSAGE_TOTAL_AMOUNT,
+					total_amount) + "\n");
+			
+			writer.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private void selectWarehouseDistrict(final int w_id, final int d_id) {
@@ -114,7 +123,10 @@ public class NewOrder {
 			targetWarehouse = cursor.next();
 			ArrayList<Document> districtList = (ArrayList<Document>) targetWarehouse.get("district");
 			targetDistrict = districtList.get(d_id - 1);
-//			System.out.println(targetDistrict.toJson());
+			if(DEBUG) {
+				System.err.println("District: " + targetDistrict.toJson());
+			} 
+			
 		} 
 		cursor.close();
 	}
@@ -130,8 +142,28 @@ public class NewOrder {
 		MongoCursor<Document> cursor = this.tableCustomer.find(searchQuery).iterator();
 		if(cursor.hasNext()) {
 			targetCustomer = (Document) cursor.next();
-//			System.out.println("customer: " + targetCustomer.getInteger("c_id"));
+			if(DEBUG) {
+				System.out.println("customer: " + targetCustomer.getInteger("c_id"));
+			} 
 		} 
+		cursor.close();
+	}
+	
+	private void selectOrder(final int w_id, final int d_id, final int o_id) {
+		// Where clause
+		BasicDBObject searchQuery = new BasicDBObject();
+		searchQuery.append("o_w_id", w_id);
+		searchQuery.append("o_d_id", d_id);
+		searchQuery.append("o_id", o_id);
+		
+		// Retrieve rows from table that satisfy where clause
+		MongoCursor<Document> cursor = this.tableOrder.find(searchQuery).iterator();
+		if(cursor.hasNext()) {
+			Document targetOrder = cursor.next();
+			System.err.println("DEBUG ORDER: " + targetOrder.toJson());
+		} else {
+			System.err.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Not inserted");
+		}
 		cursor.close();
 	}
 	
@@ -145,14 +177,17 @@ public class NewOrder {
 		MongoCursor<Document> cursor = this.tableStockItem.find(searchQuery).iterator();
 		if(cursor.hasNext()) {
 			targetStockItem = (Document) cursor.next();
-//			System.out.println("stock: " + targetStock.getInteger("s_w_id"));
-		} 
+			if(DEBUG) {
+				System.out.println("stock: " + targetStockItem.getInteger("s_w_id"));
+			} 
+		}
+			
 		cursor.close();
 	}
 	
 	private void updateWarehouseDistrict(final int w_id, final int d_id) {
 		// Set new d_next_o_id
-		double d_next_o_id = targetDistrict.getDouble("d_next_o_id") + 1;
+		int d_next_o_id = targetDistrict.getInteger("d_next_o_id") + 1;
 		BasicDBObject setDistrict = new BasicDBObject();
 		setDistrict.append("district." + (d_id - 1) + ".d_next_o_id", d_next_o_id);
 		BasicDBObject newDistrict = new BasicDBObject("$set", setDistrict);
@@ -188,16 +223,18 @@ public class NewOrder {
 		setQuery.append("$set", newStock);
 		BasicDBObject searchQuery = new BasicDBObject().append("s_w_id", warehouse)
 				.append("s_i_id", i_id);
-		tableCustomer.updateOne(searchQuery, setQuery);
+		tableStockItem.updateOne(searchQuery, setQuery);
 		
 		this.quantity = s_quantity;
 	}
 	
-	private void insertOrder(final int w_id, final int d_id, 
-			final int c_id, final float num_items, final int[] supplier_warehouse) {
+	private void insertOrder(final int w_id, final int d_id, final int c_id,
+			final float num_items, final int[] item_number, 
+			final int[] supplier_warehouse, final int[] quantity) {
 		
+		List<Document> orderList = new ArrayList();
 		o_entry_id = new Date();
-		double o_id = targetDistrict.getDouble("d_next_o_id");
+		int o_id = targetDistrict.getInteger("d_next_o_id");
 		double o_all_local = 1;
 		double o_ol_cnt = num_items;
 		
@@ -208,55 +245,58 @@ public class NewOrder {
 			}
 		}
 		
-		Document document = new Document();
-		document.put("o_w_id", w_id);
-		document.put("o_d_id", d_id);
-		document.put("o_id", o_id);
-		document.put("o_c_id", c_id);
-		document.put("o_carrier_id", null);
-		document.put("o_ol_cnt", o_ol_cnt);
-		document.put("o_all_local", o_all_local);
-		document.put("o_entry_d", o_entry_id);
-
-		tableOrder.insertOne(document);
-	}
-	
-	private void insertOrderLines(final int w_id, final int d_id,  
-			final float num_items, final int[] item_number, 
-			final int[] supplier_warehouse, final int[] quantity) {
-		
-		double o_id = targetDistrict.getDouble("d_next_o_id");
+		// Create new order
+		Document order = new Document();
+		order.put("o_w_id", w_id);
+		order.put("o_d_id", d_id);
+		order.put("o_id", o_id);
+		order.put("o_c_id", c_id);
+		order.put("o_carrier_id", null);
+		order.put("o_ol_cnt", o_ol_cnt);
+		order.put("o_all_local", o_all_local);
+		order.put("o_entry_d", o_entry_id);
 		
 		for(int i = 0; i < num_items; i++) {
-			selectStock(w_id, d_id);
 			updateStock(w_id, d_id, item_number[i], supplier_warehouse[i], quantity[i]);
 			double item_price = targetStockItem.getDouble("i_price");
 			double item_amount = quantity[i] * item_price;		
 			total_amount = total_amount + item_amount;
 			String d_dist_id = String.format("s_dist_%1$s", String.format("%02d", d_id));
 			
-			Document document = new Document();
-			document.put("ol_w_id", w_id);
-			document.put("ol_d_id", d_id);
-			document.put("ol_o_id", o_id);
-			document.put("ol_number", i);
-			document.put("ol_i_id", item_number[i]);
-			document.put("ol_delivery_d", null);
-			document.put("ol_amount", item_amount);
-			document.put("ol_supply_w_id", supplier_warehouse[i]);
-			document.put("ol_quantity",  quantity[i]);
-			document.put("ol_dist_info", targetStockItem.getString(d_dist_id));
-
-			tableOrderline.insertOne(document);
+			// Add new orderline
+			Document orderline = new Document();
+			orderline.put("ol_w_id", w_id);
+			orderline.put("ol_d_id", d_id);
+			orderline.put("ol_o_id", o_id);
+			orderline.put("ol_number", i);
+			orderline.put("ol_i_id", item_number[i]);
+			orderline.put("ol_delivery_d", null);
+			orderline.put("ol_amount", item_amount);
+			orderline.put("ol_supply_w_id", supplier_warehouse[i]);
+			orderline.put("ol_quantity",  quantity[i]);
+			orderline.put("ol_dist_info", targetStockItem.getString(d_dist_id));
 			
-			System.out.println(String.format(MESSAGE_ORDER_ITEM, 
-					item_number[i],
-					targetStockItem.getString("i_name"),
-					supplier_warehouse[i],
-					quantity[i],
-					item_amount,
-					this.quantity));
+			orderList.add(orderline);
+			
+			try {
+				writer.write(String.format(MESSAGE_ORDER_ITEM, 
+						item_number[i],
+						targetStockItem.getString("i_name"),
+						supplier_warehouse[i],
+						quantity[i],
+						item_amount,
+						this.quantity) + "\n");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
+		
+		order.put("orderLine", orderList);
+		tableOrder.insertOne(order);
+		
+		if(DEBUG) {
+			selectOrder(w_id, d_id, o_id);
+		}		
 	}
 	
 	private void computeTotal() {
