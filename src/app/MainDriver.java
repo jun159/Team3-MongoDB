@@ -40,11 +40,11 @@ public class MainDriver {
 		this.connect = new MongoDBConnect("127.0.0.1", 27017, "team3");
 		this.newOrderXact = new NewOrder(connect);
 		this.paymentXact = new Payment(connect);
-//		this.deliveryXact = new Delivery(connect);
-//		this.orderStatusXact = new OrderStatus(connect);
-//		this.stockLevelXact = new StockLevel(connect);
-//		this.popularItemXact = new PopularItem(connect);
-//		this.topBalanceXact = new TopBalance(connect);
+		this.deliveryXact = new Delivery(connect);
+		this.orderStatusXact = new OrderStatus(connect);
+		this.stockLevelXact = new StockLevel(connect);
+		this.popularItemXact = new PopularItem(connect);
+		this.topBalanceXact = new TopBalance(connect);
 		this.database = database;
 		this.xactID = xactID;
 		this.numTransactions = 0;
@@ -69,21 +69,21 @@ public class MainDriver {
 		            case XACT_PAYMENT:
 		               	runPaymentXact(args);
 		                break;
-//		            case XACT_DELIVERY:
-//		                runDeliveryXact(args);
-//		                break;
-//		            case XACT_ORDERSTATUS:
-//		               	runOrderStatusXact(args);
-//		               	break;
-//		            case XACT_STOCKLEVEL:
-//		               	runStockLevelXact(args);
-//		               	break;
-//		            case XACT_POPULARITEM:
-//		               	runPopularItemXact(args);
-//		               	break;
-//		            case XACT_TOPBALANCE:
-//		                	runTopBalanceXact(Integer.parseInt(database));
-//		                	break;
+		            case XACT_DELIVERY:
+		                runDeliveryXact(args);
+		                break;
+		            case XACT_ORDERSTATUS:
+		               	runOrderStatusXact(args);
+		               	break;
+		            case XACT_STOCKLEVEL:
+		               	runStockLevelXact(args);
+		               	break;
+		            case XACT_POPULARITEM:
+		               	runPopularItemXact(args);
+		               	break;
+		            case XACT_TOPBALANCE:
+		                	runTopBalanceXact(Integer.parseInt(database));
+		                	break;
 	                }
 	                
 	                numTransactions++;
@@ -135,7 +135,7 @@ public class MainDriver {
 		int w_id = Integer.parseInt(args[1]);
 		int carrier_id = Integer.parseInt(args[2]);
 		
-//		deliveryXact.processDelivery(w_id, carrier_id);
+		deliveryXact.processDelivery(w_id, carrier_id);
 	}
 	
 	private void runOrderStatusXact(String[] args) {
@@ -143,7 +143,7 @@ public class MainDriver {
 		int d_id = Integer.parseInt(args[2]);
 		int c_id = Integer.parseInt(args[3]);
 		
-//		orderStatusXact.processOrderStatus(w_id, d_id, c_id);
+		orderStatusXact.processOrderStatus(w_id, d_id, c_id);
 	}
 	
 	private void runStockLevelXact(String[] args) {
@@ -152,7 +152,7 @@ public class MainDriver {
 		int stockThreshold = Integer.parseInt(args[3]);
 		int numOfLastOrder = Integer.parseInt(args[4]);
 		
-//		stockLevelXact.processStockLevel(w_id, d_id, stockThreshold, numOfLastOrder);
+		stockLevelXact.processStockLevel(w_id, d_id, stockThreshold, numOfLastOrder);
 	}
 	
 	private void runPopularItemXact(String[] args) {
@@ -164,7 +164,7 @@ public class MainDriver {
 	}
 	
 	private void runTopBalanceXact(int database) {
-//		topBalanceXact.processTopBalance(database);
+		topBalanceXact.processTopBalance();
 	}
 	
 	private void outputResults() {
@@ -177,22 +177,22 @@ public class MainDriver {
 	}
 	
 	public static void main(String[] args) {
-//		if(args.length == 2) {
-//			MainDriver mainDriver = new MainDriver(args[0], args[1]);
-//			mainDriver.executeQueries();
-//			mainDriver.outputResults();
-//		} else {
-//			System.err.println(MESSAGE_ERROR_ARGS);
-//		}
+		if(args.length == 2) {
+			MainDriver mainDriver = new MainDriver(args[0], args[1]);
+			mainDriver.executeQueries();
+			mainDriver.outputResults();
+		} else {
+			System.err.println(MESSAGE_ERROR_ARGS);
+		}
 
-		Scanner sc = new Scanner(System.in);
-		System.out.print("Enter database: ");	
-		String data = sc.nextLine();
-		System.out.print("Enter file number: ");
-		String fileNum = sc.nextLine();
-		sc.close();
-		MainDriver mainDriver = new MainDriver(data, fileNum);
-		mainDriver.executeQueries();
-		mainDriver.outputResults();
+//		Scanner sc = new Scanner(System.in);
+//		System.out.print("Enter database: ");	
+//		String data = sc.nextLine();
+//		System.out.print("Enter file number: ");
+//		String fileNum = sc.nextLine();
+//		sc.close();
+//		MainDriver mainDriver = new MainDriver(data, fileNum);
+//		mainDriver.executeQueries();
+//		mainDriver.outputResults();
 	}
 }
