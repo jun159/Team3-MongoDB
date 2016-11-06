@@ -82,7 +82,7 @@ public class OrderStatus {
 //		   					);
 		   			log.write(String.format(MESSAGE_LASTORDER, 
 		   					orderDocument.getInteger("o_id"),
-		   					orderDocument.getString("o_entery_d"),
+		   					orderDocument.getString("o_entry_d"),
 		   					orderDocument.get("o_carrier_id")));
 		   		
 		   			ArrayList<Document> orderLineDocument = (ArrayList<Document>) orderDocument.get("orderLine");
