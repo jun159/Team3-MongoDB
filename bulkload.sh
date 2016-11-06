@@ -72,6 +72,8 @@ cd
 echo -ne "\nLoading warehouse, district, customer, order, orderline and stock data into MongoDB..."
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 
+./mongo team3 --eval "printjson(db.dropDatabase())"
+
 if [ $1 == 8 ]
 then
     bash ~/Team3-MongoDB/mongoimport8.sh
