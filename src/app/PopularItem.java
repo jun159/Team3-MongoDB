@@ -76,7 +76,7 @@ public class PopularItem {
 			for(int i = 0; i < orderArrayList.size(); i++) {
 				Document order = orderArrayList.get(i);
 				o_id = order.getInteger("o_id");
-				bw.write(String.format(MESSAGE_OID_DATETIME, o_id, order.getDate("o_entry_d")));
+				bw.write(String.format(MESSAGE_OID_DATETIME, o_id, order.get("o_entry_d")));
 				bw.write(String.format(MESSAGE_C_NAME, order.getString("c_first") + " " + order.getString("c_middle") + " " + order.getString("c_last")));
 				
 				@SuppressWarnings("unchecked")
