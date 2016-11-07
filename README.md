@@ -31,7 +31,7 @@ export LC_ALL=en_US.utf-8
 shift + z + z
 source .bash_profile
 ```
-### 3. Starting MongoDB server using screen
+### 4. Starting MongoDB server using screen
 ```
 =================================================================
 # If starting server for first time, create a datafolder in /temp:
@@ -42,7 +42,7 @@ screen
 ./mongod --dbpath /temp/data
 ctrl+A, D // Exit the screen
 ```
-### 4. Configuration for three nodes
+### 5. Configuration for three nodes
 ```
 cd /temp/datastax-ddc-3.9.0/conf
 vim cassandra.yaml
@@ -55,19 +55,19 @@ Edit the settings in 'cassandra.yaml' file:
 
 Save the file and restart the MongoDB server.
 
-### 5. Download project
+### 6. Download project
 Before running the scripts, make sure the project is in the home folder. Change directory to the project folder to prepare for benchmarking.
 ```
 cd Team3-MongoDB 
 ```
-### 6. Bulkload data
+### 7. Bulkload data
 The benchmark.sh script requires 2 arguments that represents the type of dataset (D8 or D40) and number of clients. </br>
 a) To bulkload all D8 datasets into the database with 1 node, run `bash bulkload.sh 8 1`. </br>
 b) To bulkload all D8 datasets into the database with 3 nodes, run `bash bulkload.sh 8 3`. </br>
 c) To bulkload all D40 datasets into the database with 1 node, run `bash bulkload.sh 40 1`. </br>
 d) To bulkload all D40 datasets into the database with 3 nodes, run `bash bulkload.sh 40 3`. 
 
-### 7. Run benchmark
+### 8. Run benchmark
 The benchmark.sh script requires 2 arguments that represents the type of dataset (D8 or D40) and number of clients. </br>
 a) To benchmark D8 datasets with 10 clients, run `bash benchmark.sh 8 10`.</br>
 b) To benchmark D8 datasets with 20 clients, run `bash benchmark.sh 8 20`.</br>
@@ -76,7 +76,7 @@ d) To benchmark D40 datasets with 10 clients, run `bash benchmark.sh 40 10`.</br
 e) To benchmark D40 datasets with 20 clients, run `bash benchmark.sh 40 20`.</br>
 f) To benchmark D40 datasets with 40 clients, run `bash benchmark.sh 40 40`.</br>
 
-### 8. To stop server
+### 9. To stop server
 ```
 killall -9 mongo
 killall -9 mongod
