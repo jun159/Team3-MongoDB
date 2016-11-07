@@ -55,8 +55,8 @@ Edit the settings in 'cassandra.yaml' file:
 
 Save the file and restart the MongoDB server.
 
-### 6. Download project
-Before running the scripts, make sure the project is in the home folder. Change directory to the project folder to prepare for benchmarking.
+### 6. Project directory
+Before running the scripts, make sure the project folder is uploaded into the home folder. Change directory to the project folder to prepare for benchmarking.
 ```
 cd Team3-MongoDB 
 ```
