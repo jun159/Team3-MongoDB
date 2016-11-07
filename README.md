@@ -34,7 +34,7 @@ source .bash_profile
 ### 4. Starting MongoDB server using screen
 ```
 =================================================================
-# If starting server for first time, create a datafolder in /temp:
+# When starting server for first time, create a data folder in /temp:
 mkdir /temp/data
 =================================================================
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
@@ -62,19 +62,19 @@ cd Team3-MongoDB
 ```
 ### 7. Bulkload data
 The benchmark.sh script requires 2 arguments that represents the type of dataset (D8 or D40) and number of clients. </br>
-a) To bulkload all D8 datasets into the database with 1 node, run `bash bulkload.sh 8 1`. </br>
-b) To bulkload all D8 datasets into the database with 3 nodes, run `bash bulkload.sh 8 3`. </br>
-c) To bulkload all D40 datasets into the database with 1 node, run `bash bulkload.sh 40 1`. </br>
-d) To bulkload all D40 datasets into the database with 3 nodes, run `bash bulkload.sh 40 3`. 
+a) D8 datasets with 1 node, run `bash bulkload.sh 8 1`. </br>
+b) D8 datasets with 3 nodes, run `bash bulkload.sh 8 3`. </br>
+c) D40 datasets with 1 node, run `bash bulkload.sh 40 1`. </br>
+d) D40 datasets with 3 nodes, run `bash bulkload.sh 40 3`. 
 
 ### 8. Run benchmark
 The benchmark.sh script requires 2 arguments that represents the type of dataset (D8 or D40) and number of clients. </br>
-a) To benchmark D8 datasets with 10 clients, run `bash benchmark.sh 8 10`.</br>
-b) To benchmark D8 datasets with 20 clients, run `bash benchmark.sh 8 20`.</br>
-c) To benchmark D8 datasets with 40 clients, run `bash benchmark.sh 8 40`.</br>
-d) To benchmark D40 datasets with 10 clients, run `bash benchmark.sh 40 10`.</br>
-e) To benchmark D40 datasets with 20 clients, run `bash benchmark.sh 40 20`.</br>
-f) To benchmark D40 datasets with 40 clients, run `bash benchmark.sh 40 40`.</br>
+a) D8 datasets with 10 clients, run `bash benchmark.sh 8 10`.</br>
+b) D8 datasets with 20 clients, run `bash benchmark.sh 8 20`.</br>
+c) D8 datasets with 40 clients, run `bash benchmark.sh 8 40`.</br>
+d) D40 datasets with 10 clients, run `bash benchmark.sh 40 10`.</br>
+e) D40 datasets with 20 clients, run `bash benchmark.sh 40 20`.</br>
+f) D40 datasets with 40 clients, run `bash benchmark.sh 40 40`.</br>
 
 ### 9. To stop server
 ```
