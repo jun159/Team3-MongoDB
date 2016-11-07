@@ -230,7 +230,7 @@ public class UpdateTables {
 	         }
 	        
 	        //drop the index
-	        db.getCollection("orderline").dropIndex("ol_i_id_1");
+//	        db.getCollection("orderline").dropIndex("ol_i_id_1");
         
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -251,6 +251,7 @@ public class UpdateTables {
 			
 			//Temporary index
 			db.getCollection("orders").createIndex(new BasicDBObject("o_c_id",1));
+			db.getCollection("orders").createIndex(new BasicDBObject("o_carrier_id",1));
 			
 	        DBCollection customerTable = db.getCollection("customer");
 	        DBCollection ordersTable = db.getCollection("orders");
@@ -281,7 +282,7 @@ public class UpdateTables {
 	        	ordersTable.updateMulti(searchOrder, updateObj);
 	         }
 	        //drop the index
-	        db.getCollection("orders").dropIndex("o_c_id_1");
+//	        db.getCollection("orders").dropIndex("o_c_id_1");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
