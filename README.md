@@ -2,7 +2,7 @@
 
 
 ## Introduction
-Cassandra benchmarking measures the performance of different data modeling with different set of nodes and clients. With comparison of different data modeling, this allows us to find out the optimized database schema design for Cassandra.
+MongoDB benchmarking measures the performance of different data modeling with different set of nodes and clients. With comparison of different data modeling, this allows us to find out the optimized database schema design for MongoDB.
 
 ## Instructions
 ### 1. Install MongoDB RHEL 7 (>=3.2.0) in temp folder
@@ -18,8 +18,7 @@ cd /temp
 wget http://download.nus.edu.sg/mirror/apache/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
 tar xzvf apache-maven-3.3.9-bin.tar.gz
 ```
-### 3. Configuration settings
-Create / Configure .bash_profile file
+### 3. Create / Configure .bash_profile file
 ```
 cd
 vim .bash_profile
@@ -32,15 +31,17 @@ export LC_ALL=en_US.utf-8
 shift + z + z
 source .bash_profile
 ```
-Configure server settings
+### 3. Starting MongoDB server using screen
 ```
+=================================================================
+# If starting server for first time, create a datafolder in /temp:
 mkdir /temp/data
+=================================================================
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 screen
-./mongod --dbpath /temp/data // Start server with chosen datapath
+./mongod --dbpath /temp/data
 ctrl+A, D // Exit the screen
 ```
-
 ### 4. Configuration for three nodes
 ```
 cd /temp/datastax-ddc-3.9.0/conf
@@ -49,21 +50,16 @@ vim cassandra.yaml
 Edit the settings in 'cassandra.yaml' file:
 
 1) seeds: Add the IP addresses of the three nodes.
-
-<img src="https://github.com/jun159/Team3-Cassandra/blob/master/IMG%20CS4224.jpg" height ="200">
     
 2) listen_address: Add in the IP address of the current node in use.
 
-<img src="https://github.com/jun159/Team3-Cassandra/blob/master/IMG%202%20CS4224.png" height ="60">
-
-Save the file and restart the cassandra server.
+Save the file and restart the MongoDB server.
 
 ### 5. Download project
-Before running the scripts, make sure that the project is in the home folder. Change directory to the project folder to prepare for benchmarking.
+Before running the scripts, make sure the project is in the home folder. Change directory to the project folder to prepare for benchmarking.
 ```
 cd Team3-MongoDB 
 ```
-
 ### 6. Bulkload data
 The benchmark.sh script requires 2 arguments that represents the type of dataset (D8 or D40) and number of clients. </br>
 a) To bulkload all D8 datasets into the database with 1 node, run `bash bulkload.sh 8 1`. </br>
