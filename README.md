@@ -32,27 +32,31 @@ shift + z + z
 source .bash_profile
 ```
 ### 4. Starting MongoDB server using screen
+If you are starting server for first time, create a data folder in /temp:
 ```
-=================================================================
-# When starting server for first time, create a data folder in /temp:
 mkdir /temp/data
-=================================================================
+```
+Start mongo server:
+```
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 screen
 ./mongod --dbpath /temp/data
 ctrl+A, D // Exit the screen
 ```
-### 5. Configuration for three shards
+### 5. Deploying three sharded clusters
+
 ```
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 mkdir /mongo-metadata
 mongod --configsvr --dbpath /mongo-metadata --port 27019
-===================================================================
-# Stop the mongo server
+```
+Stop the mongo server
+```
 killall -9 mongo
 killall -9 mongod
-===================================================================
-# Use the ip addresses of three query servers
+```
+Use the ip addresses of three query servers:
+```
 mongos --configdb [IP address 1],[IP address 2],[IP address 3]
 ===================================================================
 ```
@@ -86,4 +90,5 @@ killall -9 mongod
 ```
 
 ## References
+https://docs.mongodb.com/manual/tutorial/deploy-shard-cluster/
 https://www.digitalocean.com/community/tutorials/how-to-create-a-sharded-cluster-in-mongodb-using-an-ubuntu-12-04-vps
