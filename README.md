@@ -114,4 +114,4 @@ https://docs.mongodb.com/manual/tutorial/deploy-replica-set/
 https://docs.mongodb.com/manual/tutorial/deploy-shard-cluster/
 https://www.digitalocean.com/community/tutorials/how-to-create-a-sharded-cluster-in-mongodb-using-an-ubuntu-12-04-vps
 
-db.runCommand({addshard:"shard1/192.168.56.191:27017,192.168.56.168:27017,192.168.56.169:27017",name:"shard1",maxsize:2048, allowLocal:true });
+db.runCommand({addshard:"rs/xcnd6.comp.nus.edu.sg:27018,xcnd7.comp.nus.edu.sg:27018,xcnd8.comp.nus.edu.sg:27018",name:"team3-shard",maxsize:2048, allowLocal:true});
