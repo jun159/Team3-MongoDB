@@ -72,12 +72,7 @@ rs.initiate(
   }
 )
 ```
-e. Start each member of the shard replica set.
-```
-cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
-./mongod --shardsvr --replSet "rs" --dbpath /temp/data/rs
-```
-Check the status of connection. There should be three members.
+e. Check the status of connection. There should be three members.
 ```
 rs.status()
 ```
