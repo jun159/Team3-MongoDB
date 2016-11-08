@@ -39,31 +39,27 @@ If you are starting server for first time, create a data folder in /temp:
 ```
 mkdir /temp/data
 ```
-Start mongo server:
+Start mongo server and exit screen:
 ```
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 screen
 ./mongod --dbpath /temp/data
-ctrl+A, D // Exit the screen
+ctrl+A, D
 ```
 ### 5. Deploying three sharded clusters
-
+Start each of the clusters using commandline:
 ```
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
-mkdir /mongo-metadata
-mongod --configsvr --dbpath /mongo-metadata --port 27019
+mongod --configsvr --replSet <setname> --dbpath <path>
 ```
-Stop the mongo server
+Connect mongo shell from one of the clusters:
 ```
-killall -9 mongo
-killall -9 mongod
+mongo --host <hostname> --port <port>
 ```
 Use the ip addresses of three query servers:
 ```
 mongos --configdb [IP address 1],[IP address 2],[IP address 3]
-===================================================================
 ```
-Use the same command to start each query server.
 
 ### 6. Project directory
 Before running the scripts, make sure the project folder is uploaded into the home folder. Change directory to the project folder to prepare for benchmarking.
