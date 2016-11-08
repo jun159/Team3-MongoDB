@@ -80,6 +80,10 @@ In xcnd8 mongo shell:
 rs.add("xcnd6.comp.nus.edu.sg:27017")
 rs.add("xcnd7.comp.nus.edu.sg:27017")
 ```
+Check the status of the replica sets inside mongo shell:
+```
+rs.status()
+```
 
 ### 5. Deploying three sharded clusters
 Start each of the clusters using commandline:
