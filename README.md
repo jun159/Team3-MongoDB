@@ -47,28 +47,35 @@ screen
 ctrl+A, D
 ```
 ### 5. Create Replica set
-Create a replica set folder
+Create replica set folder
 ```
-mkdir /temp/data/rs
+mkdir /temp/data/team3
+```
+Create the Config Server Replica Set
+```
+./mongod --configsvr --replSet "team3" --dbpath /temp/data/team3
+```
+Connect to one of the config servers ([X] = server number)
+```
+./mongo --host xcnd[X].comp.nus.edu.sg --port 27019
+```
+Initiate the replica set and verify configuration ([X] = server number)
+```
+rs.initiate(
+  {
+    _id : "team3",
+    members: [
+      { _id : 6, host : "xcnd6.comp.nus.edu.sg:27019" },
+      { _id : 7, host : "xcnd7.comp.nus.edu.sg:27019" },
+      { _id : 8, host : "xcnd8.comp.nus.edu.sg:27019" }
+    ]
+  }
+)
 ```
 Specify the replSet and --shardsvr parameters
 ```
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 ./mongod --shardsvr --replSet "rs" --dbpath /temp/data/rs
-```
-Initiate the replica set and verify configuration ([X] = server number)
-```
-./mongo --host xcnd[X].comp.nus.edu.sg --port 27018
-rs.initiate(
-  {
-    _id : "rs",
-    members: [
-      { _id : 6, host : "xcnd6.comp.nus.edu.sg:27018" },
-      { _id : 7, host : "xcnd7.comp.nus.edu.sg:27018" },
-      { _id : 8, host : "xcnd8.comp.nus.edu.sg:27018" }
-    ]
-  }
-)
 ```
 Check the status of connection. There should be three members.
 ```
