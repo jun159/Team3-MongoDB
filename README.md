@@ -47,13 +47,12 @@ ctrl+A, D // Exit the screen
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 mkdir /mongo-metadata
 mongod --configsvr --dbpath /mongo-metadata --port 27019
-# Stop the mongo server
 ===================================================================
+# Stop the mongo server
 killall -9 mongo
 killall -9 mongod
 ===================================================================
 # Use the ip addresses of three query servers
-===================================================================
 mongos --configdb [IP address 1],[IP address 2],[IP address 3]
 ===================================================================
 ```
