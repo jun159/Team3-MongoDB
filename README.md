@@ -69,8 +69,8 @@ rs.initiate(
     ]
   }
 )
-rs.add("xcnd7.comp.nus.edu.sg:27017")
-rs.add("xcnd8.comp.nus.edu.sg:27017")
+rs.add("xcnd7.comp.nus.edu.sg:27018")
+rs.add("xcnd8.comp.nus.edu.sg:27018")
 
 ```
 Check the status of connection. There should be three members.
@@ -82,7 +82,7 @@ rs.status()
 
 Connect a mongos to the cluster
 ```
-./mongos --configdb "rs"/xcnd6.comp.nus.edu.sg:27017,xcnd7.comp.nus.edu.sg:27017,xcnd8.comp.nus.edu.sg:27017
+./mongos --configdb rs/xcnd6.comp.nus.edu.sg:27018,xcnd7.comp.nus.edu.sg:27018,xcnd8.comp.nus.edu.sg:27018
 ```
 
 ### 7. Project directory
