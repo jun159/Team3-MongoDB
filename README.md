@@ -46,6 +46,27 @@ screen
 ./mongod --dbpath /temp/data
 ctrl+A, D
 ```
+### 5. Create Replica set
+Create a replica set folder
+```
+mkdir /temp/rs
+```
+Set the name of replica set
+```
+cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
+./mongod --replSet "rs"
+```
+Initiate the replica set and verify configuration
+```
+./mongo
+rs.initiate()
+```
+Add remaining members into replica set
+```
+rs.add([IP Address])
+rs.add([IP Address])
+```
+
 ### 5. Deploying three sharded clusters
 Start each of the clusters using commandline:
 ```
@@ -89,5 +110,6 @@ killall -9 mongod
 ```
 
 ## References
+https://docs.mongodb.com/manual/tutorial/deploy-replica-set/
 https://docs.mongodb.com/manual/tutorial/deploy-shard-cluster/
 https://www.digitalocean.com/community/tutorials/how-to-create-a-sharded-cluster-in-mongodb-using-an-ubuntu-12-04-vps
