@@ -61,8 +61,10 @@ Initiate the replica set and verify configuration
 ./mongo
 rs.initiate()
 ```
-Add remaining members into replica set <br>
+Add remaining members into replica set
+
 For example, if servers = {xcnd6, xcnd7, xcnd8}
+
 In xcnd6 mongo shell:
 ```
 rs.add("xcnd7.comp.nus.edu.sg:27017")
