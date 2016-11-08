@@ -42,18 +42,22 @@ screen
 ./mongod --dbpath /temp/data
 ctrl+A, D // Exit the screen
 ```
-### 5. Configuration for three nodes
+### 5. Configuration for three shards
 ```
-cd /temp/datastax-ddc-3.9.0/conf
-vim cassandra.yaml
+cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
+mkdir /mongo-metadata
+mongod --configsvr --dbpath /mongo-metadata --port 27019
+# Stop the mongo server
+===================================================================
+killall -9 mongo
+killall -9 mongod
+===================================================================
+# Use the ip addresses of three query servers
+===================================================================
+mongos --configdb [IP address 1],[IP address 2],[IP address 3]
+===================================================================
 ```
-Edit the settings in 'cassandra.yaml' file:
-
-1) seeds: Add the IP addresses of the three nodes.
-    
-2) listen_address: Add in the IP address of the current node in use.
-
-Save the file and restart the MongoDB server.
+Use the same command to start each query server.
 
 ### 6. Project directory
 Before running the scripts, make sure the project folder is uploaded into the home folder. Change directory to the project folder to prepare for benchmarking.
@@ -83,3 +87,4 @@ killall -9 mongod
 ```
 
 ## References
+https://www.digitalocean.com/community/tutorials/how-to-create-a-sharded-cluster-in-mongodb-using-an-ubuntu-12-04-vps
