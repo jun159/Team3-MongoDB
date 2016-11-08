@@ -63,56 +63,56 @@ rs.initiate()
 ```
 Add remaining members into replica set
 
-For example, if servers = {xcnd6, xcnd7, xcnd8}
+EXAMPLE: Servers = {xcnd6, xcnd7, xcnd8}, add via mongo shell
 
-In xcnd6 mongo shell:
+xcnd6 server:
 ```
 rs.add("xcnd7.comp.nus.edu.sg:27017")
 rs.add("xcnd8.comp.nus.edu.sg:27017")
 ```
-In xcnd7 mongo shell:
+xcnd7 server:
 ```
 rs.add("xcnd6.comp.nus.edu.sg:27017")
 rs.add("xcnd8.comp.nus.edu.sg:27017")
 ```
-In xcnd8 mongo shell:
+xcnd8 server:
 ```
 rs.add("xcnd6.comp.nus.edu.sg:27017")
 rs.add("xcnd7.comp.nus.edu.sg:27017")
 ```
-Check the status of the replica sets inside mongo shell:
+Check the status of connection:
 ```
 rs.status()
 ```
 
-### 5. Deploying three sharded clusters
-Start each of the clusters using commandline:
+### 6. Create the Shard Replica Sets
+Specify the replSet and --shardsvr parameters
 ```
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
-mongod --configsvr --replSet <setname> --dbpath <path>
+mongod --shardsvr --replSet "rs"
 ```
-Connect mongo shell from one of the clusters:
+Connect to a member of the shard replica set via mongo shell
 ```
-mongo --host <hostname> --port <port>
+rs.initiate()
 ```
-Use the ip addresses of three query servers:
+Connect a mongos to the cluster
 ```
-mongos --configdb [IP address 1],[IP address 2],[IP address 3]
+./mongos --configdb rs/xcnd6.comp.nus.edu.sg:27017,xcnd7.comp.nus.edu.sg:27017,xcnd8.comp.nus.edu.sg:27017
 ```
 
-### 6. Project directory
+### 7. Project directory
 Before running the scripts, make sure the project folder is uploaded into the home folder. Change directory to the project folder to prepare for benchmarking.
 ```
 cd Team3-MongoDB 
 ```
-### 7. Bulkload data
+### 8. Bulkload data
 The benchmark.sh script requires 2 arguments that represents the type of dataset (D8 or D40) and number of clients. </br>
 a) D8 datasets with 1 node, run `bash bulkload.sh 8 1`. </br>
 b) D8 datasets with 3 nodes, run `bash bulkload.sh 8 3`. </br>
 c) D40 datasets with 1 node, run `bash bulkload.sh 40 1`. </br>
 d) D40 datasets with 3 nodes, run `bash bulkload.sh 40 3`. 
 
-### 8. Run benchmark
+### 9. Run benchmark
 The benchmark.sh script requires 2 arguments that represents the type of dataset (D8 or D40) and number of clients. </br>
 a) D8 datasets with 10 clients, run `bash benchmark.sh 8 10`.</br>
 b) D8 datasets with 20 clients, run `bash benchmark.sh 8 20`.</br>
@@ -121,7 +121,7 @@ d) D40 datasets with 10 clients, run `bash benchmark.sh 40 10`.</br>
 e) D40 datasets with 20 clients, run `bash benchmark.sh 40 20`.</br>
 f) D40 datasets with 40 clients, run `bash benchmark.sh 40 40`.</br>
 
-### 9. To stop server
+### 10. Stop server
 ```
 killall -9 mongo
 killall -9 mongod
