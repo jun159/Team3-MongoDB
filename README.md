@@ -47,32 +47,32 @@ screen
 ctrl+A, D
 ```
 ### 5. Create Replica set
-Create replica set folder
+a. Create replica set folder
 ```
 mkdir /temp/data/team3
 ```
-Create the Config Server Replica Set
+b. Start each member of the shard replica set.
 ```
-./mongod --configsvr --replSet "team3" --dbpath /temp/data/team3
+./mongod --shardsvr --replSet "team3" --dbpath /temp/data/team3
 ```
-Connect to one of the config servers ([X] = server number)
+c. Connect to a member of the shard replica set. ([X] = server number)
 ```
-./mongo --host xcnd[X].comp.nus.edu.sg --port 27019
+./mongo --host xcnd[X].comp.nus.edu.sg --port 27018
 ```
-Initiate the replica set and verify configuration ([X] = server number)
+d. Initiate the replica set. ([X] = server number)
 ```
 rs.initiate(
   {
     _id : "team3",
     members: [
-      { _id : 6, host : "xcnd6.comp.nus.edu.sg:27019" },
-      { _id : 7, host : "xcnd7.comp.nus.edu.sg:27019" },
-      { _id : 8, host : "xcnd8.comp.nus.edu.sg:27019" }
+      { _id : 6, host : "xcnd6.comp.nus.edu.sg:27018" },
+      { _id : 7, host : "xcnd7.comp.nus.edu.sg:27018" },
+      { _id : 8, host : "xcnd8.comp.nus.edu.sg:27018" }
     ]
   }
 )
 ```
-Specify the replSet and --shardsvr parameters
+e. Start each member of the shard replica set.
 ```
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 ./mongod --shardsvr --replSet "rs" --dbpath /temp/data/rs
