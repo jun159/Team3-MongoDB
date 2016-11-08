@@ -49,12 +49,12 @@ ctrl+A, D
 ### 5. Create Replica set
 Create a replica set folder
 ```
-mkdir /temp/rs
+mkdir /temp/data/rs
 ```
 Set the name of replica set
 ```
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
-./mongod --replSet "rs"
+./mongod --replSet "rs" --dbpath /temp/data/rs
 ```
 Initiate the replica set and verify configuration
 ```
@@ -62,9 +62,21 @@ Initiate the replica set and verify configuration
 rs.initiate()
 ```
 Add remaining members into replica set
+Example: Servers = {xcnd6, xcnd7, xcnd8}
+In xcnd6:
 ```
-rs.add([IP Address])
-rs.add([IP Address])
+rs.add("xcnd7.comp.nus.edu.sg:27017")
+rs.add("xcnd8.comp.nus.edu.sg:27017")
+```
+In xcnd7:
+```
+rs.add("xcnd6.comp.nus.edu.sg:27017")
+rs.add("xcnd8.comp.nus.edu.sg:27017")
+```
+In xcnd8:
+```
+rs.add("xcnd6.comp.nus.edu.sg:27017")
+rs.add("xcnd7.comp.nus.edu.sg:27017")
 ```
 
 ### 5. Deploying three sharded clusters
