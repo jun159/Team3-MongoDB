@@ -76,12 +76,9 @@ e. Check the status of connection. There should be three members.
 ```
 rs.status()
 ```
-
-### 6. Create the Shard Replica Sets
-
-Connect a mongos to the cluster
+f. Connect a mongos to the cluster
 ```
-./mongos --configdb rs/xcnd6.comp.nus.edu.sg:27018,xcnd7.comp.nus.edu.sg:27018,xcnd8.comp.nus.edu.sg:27018
+./mongos --configdb rs/xcnd6.comp.nus.edu.sg:27017,xcnd7.comp.nus.edu.sg:27017,xcnd8.comp.nus.edu.sg:27017
 ```
 
 ### 7. Project directory
