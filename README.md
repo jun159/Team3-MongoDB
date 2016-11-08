@@ -56,7 +56,7 @@ Specify the replSet and --shardsvr parameters
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 ./mongod --shardsvr --replSet "rs" --dbpath /temp/data/rs
 ```
-Initiate the replica set and verify configuration (x = server number)
+Initiate the replica set and verify configuration ([X] = server number)
 ```
 ./mongo --host xcnd[X].comp.nus.edu.sg --port 27018
 rs.initiate(
@@ -69,41 +69,20 @@ rs.initiate(
     ]
   }
 )
-```
-Add remaining members into replica set
-
-EXAMPLE: Servers = {xcnd6, xcnd7, xcnd8}, add via mongo shell
-
-xcnd6 server:
-```
 rs.add("xcnd7.comp.nus.edu.sg:27017")
 rs.add("xcnd8.comp.nus.edu.sg:27017")
+
 ```
-xcnd7 server:
-```
-rs.add("xcnd6.comp.nus.edu.sg:27017")
-rs.add("xcnd8.comp.nus.edu.sg:27017")
-```
-xcnd8 server:
-```
-rs.add("xcnd6.comp.nus.edu.sg:27017")
-rs.add("xcnd7.comp.nus.edu.sg:27017")
-```
-Check the status of connection:
+Check the status of connection. There should be three members.
 ```
 rs.status()
 ```
 
 ### 6. Create the Shard Replica Sets
 
-```
-Connect to a member of the shard replica set via mongo shell
-```
-rs.initiate()
-```
 Connect a mongos to the cluster
 ```
-./mongos --configdb rs/xcnd6.comp.nus.edu.sg:27017,xcnd7.comp.nus.edu.sg:27017,xcnd8.comp.nus.edu.sg:27017 --dbpath /temp/data/rs
+./mongos --configdb "rs"/xcnd6.comp.nus.edu.sg:27017,xcnd7.comp.nus.edu.sg:27017,xcnd8.comp.nus.edu.sg:27017
 ```
 
 ### 7. Project directory
