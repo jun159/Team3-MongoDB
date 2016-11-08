@@ -22,12 +22,15 @@ tar xzvf apache-maven-3.3.9-bin.tar.gz
 ```
 cd
 vim .bash_profile
-===================================================
-# Add these lines into .bash_profile file:
+```
+Add these lines into .bash_profile file:
+```
 export PATH=/temp/apache-maven-3.3.9/bin:$PATH
 export LANG=en_US.utf-8
 export LC_ALL=en_US.utf-8
-===================================================
+```
+Save:
+```
 shift + z + z
 source .bash_profile
 ```
