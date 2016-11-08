@@ -69,9 +69,6 @@ rs.initiate(
     ]
   }
 )
-rs.add("xcnd7.comp.nus.edu.sg:27018")
-rs.add("xcnd8.comp.nus.edu.sg:27018")
-
 ```
 Check the status of connection. There should be three members.
 ```
