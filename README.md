@@ -76,7 +76,7 @@ e. Check the status of connection. There should be three members.
 ```
 rs.status()
 ```
-f. Connect a mongos to the cluster
+f. Connect mongos to the cluster
 ```
 ./mongos --configdb rs/xcnd6.comp.nus.edu.sg:27017,xcnd7.comp.nus.edu.sg:27017,xcnd8.comp.nus.edu.sg:27017
 ```
@@ -112,5 +112,3 @@ killall -9 mongod
 https://docs.mongodb.com/manual/tutorial/deploy-replica-set/
 https://docs.mongodb.com/manual/tutorial/deploy-shard-cluster/
 https://www.digitalocean.com/community/tutorials/how-to-create-a-sharded-cluster-in-mongodb-using-an-ubuntu-12-04-vps
-
-db.runCommand({addshard:"rs/xcnd6.comp.nus.edu.sg:27018,xcnd7.comp.nus.edu.sg:27018,xcnd8.comp.nus.edu.sg:27018",name:"team3-shard",maxsize:2048, allowLocal:true});
