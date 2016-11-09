@@ -4,7 +4,7 @@
 ## Introduction
 MongoDB benchmarking measures the performance of different data modeling with different set of nodes and clients. With comparison of different data modeling, this allows us to find out the optimized database schema design for MongoDB.
 
-## Instructions
+## Installing instructions
 ### 1. Install MongoDB RHEL 7 (>=3.2.0) in temp folder
 ```
 cd /temp
@@ -34,18 +34,31 @@ Save:
 shift + z + z
 source .bash_profile
 ```
-### 4. Starting MongoDB server using screen
-If you are starting server for first time, create a data folder in /temp:
+## Running on single-node
+1. Create a data folder in /temp.
 ```
-mkdir /temp/data/team3
+mkdir /temp/data/single-node
 ```
-Start mongo server and exit screen:
+2. Start mongodb server.
 ```
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
-screen
-./mongod --dbpath /temp/data
-ctrl+A, D
+./mongod --dbpath /temp/data/single-node
 ```
+3. Bulkload database.
+The benchmark.sh script requires 1 argument that represents the type of dataset (D8 or D40). </br>
+a) D8 datasets, run `bash bulkload.sh 8`. </br>
+c) D40 datasets, run `bash bulkload.sh 40`. </br>
+
+4. Run benchmark.
+The benchmark.sh script requires 2 arguments that represents the type of dataset (D8 or D40) and number of clients. </br>
+a) D8 datasets with 10 clients, run `bash benchmark.sh 8 10`.</br>
+b) D8 datasets with 20 clients, run `bash benchmark.sh 8 20`.</br>
+c) D8 datasets with 40 clients, run `bash benchmark.sh 8 40`.</br>
+d) D40 datasets with 10 clients, run `bash benchmark.sh 40 10`.</br>
+e) D40 datasets with 20 clients, run `bash benchmark.sh 40 20`.</br>
+f) D40 datasets with 40 clients, run `bash benchmark.sh 40 40`.</br>
+
+
 ### 5. Set up initial replica set
 a. Create replica set folder
 ```
