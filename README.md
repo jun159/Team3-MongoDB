@@ -122,11 +122,9 @@ Before running the scripts, make sure the project folder is uploaded into the ho
 cd Team3-MongoDB 
 ```
 ### Bulkload data
-The benchmark.sh script requires 2 arguments that represents the type of dataset (D8 or D40) and number of clients. </br>
-a) D8 datasets with 1 node, run `bash bulkload.sh 8 1`. </br>
-b) D8 datasets with 3 nodes, run `bash bulkload.sh 8 3`. </br>
-c) D40 datasets with 1 node, run `bash bulkload.sh 40 1`. </br>
-d) D40 datasets with 3 nodes, run `bash bulkload.sh 40 3`. 
+The benchmark.sh script requires 1 argument that represents the type of dataset (D8 or D40). </br>
+a) D8 datasets, run `bash bulkload.sh 8`. </br>
+c) D40 datasets, run `bash bulkload.sh 40`. </br>
 
 ### Run benchmark
 The benchmark.sh script requires 2 arguments that represents the type of dataset (D8 or D40) and number of clients. </br>
@@ -144,9 +142,9 @@ killall -9 mongod
 ```
 
 ## References
-https://docs.mongodb.com/manual/tutorial/deploy-replica-set/
-https://docs.mongodb.com/manual/tutorial/deploy-shard-cluster/
-https://www.digitalocean.com/community/tutorials/how-to-create-a-sharded-cluster-in-mongodb-using-an-ubuntu-12-04-vps
+https://docs.mongodb.com/manual/tutorial/deploy-replica-set/ <br>
+https://docs.mongodb.com/manual/tutorial/deploy-shard-cluster/ <br>
+https://www.digitalocean.com/community/tutorials/how-to-create-a-sharded-cluster-in-mongodb-using-an-ubuntu-12-04-vps <br>
 
 --------------- old: ./mongod --shardsvr --replSet "team3" --dbpath /temp/data/team3
 ./mongos --configdb 192.168.48.225:21000,192.168.48.226:21000,192.168.48.227:21000 --port 20000
