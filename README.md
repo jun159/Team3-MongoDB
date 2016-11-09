@@ -78,7 +78,7 @@ rs.status()
 ```
 f. Connect mongos to the cluster
 ```
-./mongos --configdb rs/xcnd6.comp.nus.edu.sg:27017,xcnd7.comp.nus.edu.sg:27017,xcnd8.comp.nus.edu.sg:27017
+./mongos --configdb team3/xcnd6.comp.nus.edu.sg:27018,xcnd7.comp.nus.edu.sg:27018,xcnd8.comp.nus.edu.sg:27018 --port 27018
 ```
 
 ### 7. Project directory
