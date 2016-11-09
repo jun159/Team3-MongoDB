@@ -164,6 +164,10 @@ c. Shard the initial replica set (21000)
 ```
 sh.addShard( "rs-data/xcnd6.comp.nus.edu.sg:21000,xcnd7.comp.nus.edu.sg:21000,xcnd8.comp.nus.edu.sg:21000" )
 ```
+d. Check the status of the shard. There should be three hostnames in the 'shards' field.
+```
+sh.status()
+```
 ### 4. Go to Project directory
 Before running the scripts, make sure the project folder is uploaded into the home folder. Change directory to the project folder to prepare for benchmarking.
 ```
