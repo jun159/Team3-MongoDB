@@ -79,17 +79,17 @@ rs.status()
 ```
 f. Connect mongos to the cluster
 ```
-./mongos --configdb xcnd6.comp.nus.edu.sg:27019,xcnd7.comp.nus.edu.sg:27019,xcnd8.comp.nus.edu.sg:27019
+./mongos --configdb team3/xcnd6.comp.nus.edu.sg:27019,xcnd7.comp.nus.edu.sg:27019,xcnd8.comp.nus.edu.sg:27019
 ```
 g. Connect to the mongos.
 ```
-./mongo --host xcnd[X].comp.nus.edu.sg --port 27019
+./mongo --host xcnd[X].comp.nus.edu.sg --port 27017
 ```
 h. Add Shards to the Cluster
 ```
-sh.addShard("xcnd6.comp.nus.edu.sg:27019")
-sh.addShard("xcnd7.comp.nus.edu.sg:27019")
-sh.addShard("xcnd8.comp.nus.edu.sg:27019")
+sh.addShard("team3/xcnd6.comp.nus.edu.sg:27017")
+sh.addShard("team3/xcnd7.comp.nus.edu.sg:27017")
+sh.addShard("team3/xcnd8.comp.nus.edu.sg:27017")
 ```
 
 ### 7. Project directory
