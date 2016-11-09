@@ -35,21 +35,21 @@ shift + z + z
 source .bash_profile
 ```
 ## Running on single-node
-1. Create a data folder in /temp.
+### 1. Create a data folder in /temp.
 ```
 mkdir /temp/data/single-node
 ```
-2. Start mongodb server.
+### 2. Start mongodb server.
 ```
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 ./mongod --dbpath /temp/data/single-node
 ```
-3. Bulkload database.
+### 3. Bulkload database.
 The benchmark.sh script requires 1 argument that represents the type of dataset (D8 or D40). </br>
 a) D8 datasets, run `bash bulkload.sh 8`. </br>
 c) D40 datasets, run `bash bulkload.sh 40`. </br>
 
-4. Run benchmark.
+### 4. Run benchmark.
 The benchmark.sh script requires 2 arguments that represents the type of dataset (D8 or D40) and number of clients. </br>
 a) D8 datasets with 10 clients, run `bash benchmark.sh 8 10`.</br>
 b) D8 datasets with 20 clients, run `bash benchmark.sh 8 20`.</br>
@@ -58,8 +58,8 @@ d) D40 datasets with 10 clients, run `bash benchmark.sh 40 10`.</br>
 e) D40 datasets with 20 clients, run `bash benchmark.sh 40 20`.</br>
 f) D40 datasets with 40 clients, run `bash benchmark.sh 40 40`.</br>
 
-
-### 5. Set up initial replica set
+## Running with three nodes
+### 1. Set up initial replica set
 a. Create replica set folder
 ```
 mkdir /temp/data
