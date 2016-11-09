@@ -53,7 +53,7 @@ mkdir /temp/data/team3
 ```
 b. Start each member of the shard replica set.
 ```
-./mongod --configsvr --dbpath /temp/data --port 27019
+./mongod --configsvr --dbpath /temp/data --port 27018
 
 
 --------------- old: ./mongod --shardsvr --replSet "team3" --dbpath /temp/data/team3
