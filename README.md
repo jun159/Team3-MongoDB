@@ -122,7 +122,7 @@ d. Initiate the replica set.
 
 Example: 
 
-Using port number = 21000
+Using port number = 27019
 
 hostname = {xcnd6.comp.nus.edu.sg, xcnd7.comp.nus.edu.sg, xcnd8.comp.nus.edu.sg}
 ```
@@ -137,11 +137,11 @@ rs.initiate(
   }
 )
 ```
-e. Check the status of connection. There should be three members.
+e. Check the status of connection. There should be three members in the set.
 ```
 rs.status()
 ```
-### 3. Add sharding to cluster
+### 3. Sharding
 f. Connect mongos to the cluster
 ```
 ./mongos --configdb config_rs/xcnd6.comp.nus.edu.sg:27019,xcnd7.comp.nus.edu.sg:27019,xcnd8.comp.nus.edu.sg:27019
