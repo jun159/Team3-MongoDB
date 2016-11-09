@@ -46,12 +46,32 @@ screen
 ./mongod --dbpath /temp/data
 ctrl+A, D
 ```
-### 5. Setting up configuration server and query router for Three replica cluster
+### 4. Set up initial replica set
 a. Create replica set folder
 ```
 mkdir /temp/data
 mkdir /temp/data/team3
 ```
+b. Start each member of the replica set with the appropriate options
+```
+./mongod --replSet "team3"
+```
+c. Connect to one of the members. ([X] = server number)
+```
+./mongo --host xcnd[X].comp.nus.edu.sg
+```
+d. Initiate the replica set. ([X] = server number)
+```
+rs.initiate()
+```
+e. Add the remaining members to the set
+```
+rs.add("xcnd7.comp.nus.edu.sg")
+rs.add("xcnd8.comp.nus.edu.sg")
+```
+
+### 5. Setting up configuration server and query router for Three replica cluster
+
 b. Start the configuration server 
 ```
 ./mongod --configsvr --replSet "team3" --dbpath /temp/data/team3
