@@ -54,6 +54,7 @@ mkdir /temp/data/team3
 ```
 b. Start each member of the replica set with the appropriate options
 ```
+cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 ./mongod --replSet "team3" --dbpath /temp/data/team3 --port 21000
 ```
 c. Connect to one of the members. ([X] = server number)
@@ -73,15 +74,16 @@ rs.add("xcnd8.comp.nus.edu.sg:21000")
 ### 6. Setting up configuration server and query router for Three replica cluster
 a. Create replica set folder
 ```
-mkdir /temp/data
 mkdir /temp/data/config_rs
 ```
 b. Start the configuration server 
 ```
+cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 ./mongod --configsvr --replSet "config_rs" --dbpath /temp/data/config_rs --port 27019
 ```
 c. Connect to one of the config servers. ([X] = server number)
 ```
+cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 ./mongo --host xcnd[X].comp.nus.edu.sg --port 27019
 ```
 d. Initiate the replica set. ([X] = server number)
