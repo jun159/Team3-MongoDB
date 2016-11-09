@@ -151,19 +151,50 @@ a. Connect mongos to the cluster using port# 27019
 ./mongos --configdb config_rs/xcnd6.comp.nus.edu.sg:27019,xcnd7.comp.nus.edu.sg:27019,xcnd8.comp.nus.edu.sg:27019
 ```
 b. Connect to the mongos via mongo shell using port # 27017
+
+Example: Primary member hostname = xcnd6.comp.nus.edu.sg
+
 ```
-./mongo --host xcnd[X].comp.nus.edu.sg --port 27017
+./mongo --host xcnd6.comp.nus.edu.sg --port 27017
 ```
 c. Shard the initial replica set (21000) 
 ```
 sh.addShard( "rs-data/xcnd6.comp.nus.edu.sg:21000,xcnd7.comp.nus.edu.sg:21000,xcnd8.comp.nus.edu.sg:21000" )
 ```
-### Bulkload data
+### 4. Go to Project directory
+Before running the scripts, make sure the project folder is uploaded into the home folder. Change directory to the project folder to prepare for benchmarking.
+```
+cd Team3-MongoDB
+```
+### 5. Bulkload data
 The benchmark.sh script requires 1 argument that represents the type of dataset (D8 or D40). </br>
 a) D8 datasets, run `bash bulkload.sh 8`. </br>
 c) D40 datasets, run `bash bulkload.sh 40`. </br>
 
-### Run benchmark
+### 6. Sharding collections
+#### Use primary member
+
+Example: Primary member hostname = xcnd6.comp.nus.edu.sg
+
+a. Connect to mongos (27017) via mongo shell
+
+```
+./mongo --host xcnd6.comp.nus.edu.sg --port 27017
+```
+b. Use these functions to shard the collections
+```
+sh.shardCollection("team3.warehouseDistrict", {w_id: 1})
+sh.shardCollection("team3.customer", { c_w_id: 1})
+sh.shardCollection(“team3.stockItem”, { s_w_id : 1})
+sh.shardCollection(“team3.orderOrderLine", { o_w_id: 1 })
+```
+
+### 7. Add sharding keys
+The benchmark.sh script requires 1 argument that represents the type of dataset (D8 or D40). </br>
+a) D8 datasets, run `bash bulkload.sh 8`. </br>
+c) D40 datasets, run `bash bulkload.sh 40`. </br>
+
+### 8. Run benchmark
 The benchmark.sh script requires 2 arguments that represents the type of dataset (D8 or D40) and number of clients. </br>
 a) D8 datasets with 10 clients, run `bash benchmark.sh 8 10`.</br>
 b) D8 datasets with 20 clients, run `bash benchmark.sh 8 20`.</br>
