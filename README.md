@@ -64,7 +64,7 @@ ctrl+c
 ```
 f. Connect mongos to the cluster
 ```
-./mongos --configdb data/xcnd6.comp.nus.edu.sg:27019,xcnd7.comp.nus.edu.sg:27019,xcnd8.comp.nus.edu.sg:27019
+./mongos --configdb data/xcnd6.comp.nus.edu.sg:27018,xcnd7.comp.nus.edu.sg:27018,xcnd8.comp.nus.edu.sg:27018
 ```
 c. Connect to a member of the shard replica set. ([X] = server number)
 ```
