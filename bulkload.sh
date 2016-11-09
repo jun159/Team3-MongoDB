@@ -6,11 +6,10 @@
 
 # The arguments can have the following values:
 #		arg0: Database - 8, 40
-#		arg1: Number of clients - 10, 20, 40
+#       arg1: Number of nodes - 1, 3
 
 # Conditions:
 #       Project (Team3-MongoDB) is in home directory
-#		cqlsh is within /temp/datastax-ddc-3.9.0/bin directory
 
 declare -r FOLDER_DATA="data"
 declare -r FOLDER_D8="D8-data"
@@ -74,11 +73,18 @@ cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 
 ./mongo team3 --eval "printjson(db.dropDatabase())"
 
-if [ $1 == 8 ]
+if [ $1 == 8 ] && [ $2 == 1 ]
 then
-    bash ~/Team3-MongoDB/mongoimport8.sh
-else
-    bash ~/Team3-MongoDB/mongoimport40.sh
+    bash ~/Team3-MongoDB/mongoimport8-1.sh
+else if [ $1 == 8 ] && [ $2 == 3 ]
+then
+    bash ~/Team3-MongoDB/mongoimport8-3.sh
+else if [ $1 == 40 ] && [ $2 == 1 ]
+then
+    bash ~/Team3-MongoDB/mongoimport40-1.sh
+else if [ $1 == 40 ] && [ $2 == 3 ]
+then
+    bash ~/Team3-MongoDB/mongoimport40-3.sh
 fi
 
 cd ~/Team3-MongoDB
