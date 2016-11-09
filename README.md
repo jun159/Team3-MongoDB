@@ -37,12 +37,12 @@ source .bash_profile
 ## Running on single-node
 ### 1. Create a data folder in /temp.
 ```
-mkdir /temp/data/single-node
+mkdir /temp/single-node
 ```
 ### 2. Start mongodb server.
 ```
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
-./mongod --dbpath /temp/data/single-node
+./mongod --dbpath /temp/single-node
 ```
 ### 3. Bulkload database.
 The benchmark.sh script requires 1 argument that represents the type of dataset (D8 or D40). </br>
