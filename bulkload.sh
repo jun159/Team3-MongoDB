@@ -84,9 +84,3 @@ echo -ne "\nLoading item data into MongoDB.."
 mvn -q install &>/dev/null
 mvn -q compile &>/dev/null
 mvn -q exec:java -Dexec.mainClass="database.UpdateTables" -Dexec.args="$1"
-
-# Create shard keys
-sh.shardCollection("team3.warehouseDistrict", { w_id: 1 })
-sh.shardCollection("team3.customer", { c_w_id: 1 })
-sh.shardCollection("team3.stockItem", { s_w_id : 1 })
-sh.shardCollection("team3.orderOrderLine", { o_w_id: 1 })
