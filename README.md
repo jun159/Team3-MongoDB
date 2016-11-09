@@ -73,7 +73,7 @@ mkdir /temp/rs-data
 b. Start the mongodb server
 ```
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
-./mongod --replSet "team3" --dbpath /temp/rs-data --port 21000
+./mongod --replSet "rs-data" --dbpath /temp/rs-data --port 21000
 ```
 #### Use one of the members:
 c. Connect using the mongo shell ([X] = server number)
@@ -142,20 +142,18 @@ e. Check the status of connection. There should be three members in the set.
 rs.status()
 ```
 ### 3. Sharding
-f. Connect mongos to the cluster
+#### Connect mongos to the cluster
 ```
 ./mongos --configdb config_rs/xcnd6.comp.nus.edu.sg:27019,xcnd7.comp.nus.edu.sg:27019,xcnd8.comp.nus.edu.sg:27019
 ```
-g. Connect to the mongos.
+#### Connect to the mongos.
 ```
 ./mongo --host xcnd[X].comp.nus.edu.sg --port 27017
 ```
-h. Add shard to cluster
+#### Add shard to cluster
 ```
-sh.addShard( "team3/xcnd6.comp.nus.edu.sg:21000,xcnd7.comp.nus.edu.sg:21000,xcnd8.comp.nus.edu.sg:21000" )
+sh.addShard( "rs-data/xcnd6.comp.nus.edu.sg:21000,xcnd7.comp.nus.edu.sg:21000,xcnd8.comp.nus.edu.sg:21000" )
 ```
-
-
 ### Bulkload data
 The benchmark.sh script requires 1 argument that represents the type of dataset (D8 or D40). </br>
 a) D8 datasets, run `bash bulkload.sh 8`. </br>
