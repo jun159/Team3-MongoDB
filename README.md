@@ -46,7 +46,7 @@ screen
 ./mongod --dbpath /temp/data
 ctrl+A, D
 ```
-### 5. Create Replica set
+### 5. Setting up configuration server and query router for Three replica cluster
 a. Create replica set folder
 ```
 mkdir /temp/data
@@ -85,7 +85,7 @@ rs.status()
 ```
 f. Connect mongos to the cluster
 ```
-./mongos --configdb xcnd6.comp.nus.edu.sg:27018,xcnd7.comp.nus.edu.sg:27018,xcnd8.comp.nus.edu.sg:27018
+./mongos --configdb xcnd6.comp.nus.edu.sg:27019,xcnd7.comp.nus.edu.sg:27019,xcnd8.comp.nus.edu.sg:27019
 ```
 
 ### 7. Project directory
