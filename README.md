@@ -54,7 +54,6 @@ mkdir /temp/data
 b. Start the configuration server 
 ```
 ./mongod --configsvr --replSet "team3" --dbpath /temp/data/team3
-ctrl+c
 
 --------------- old: ./mongod --shardsvr --replSet "team3" --dbpath /temp/data/team3
 ./mongos --configdb 192.168.48.225:21000,192.168.48.226:21000,192.168.48.227:21000 --port 20000
@@ -72,9 +71,9 @@ rs.initiate(
   {
     _id : "team3",
     members: [
-      { _id : 6, host : "xcnd6.comp.nus.edu.sg:27019" },
-      { _id : 7, host : "xcnd7.comp.nus.edu.sg:27019" },
-      { _id : 8, host : "xcnd8.comp.nus.edu.sg:27019" }
+      { _id : 6, host : "xcnd6.comp.nus.edu.sg:27017" },
+      { _id : 7, host : "xcnd7.comp.nus.edu.sg:27017" },
+      { _id : 8, host : "xcnd8.comp.nus.edu.sg:27017" }
     ]
   }
 )
