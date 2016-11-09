@@ -112,3 +112,12 @@ killall -9 mongod
 https://docs.mongodb.com/manual/tutorial/deploy-replica-set/
 https://docs.mongodb.com/manual/tutorial/deploy-shard-cluster/
 https://www.digitalocean.com/community/tutorials/how-to-create-a-sharded-cluster-in-mongodb-using-an-ubuntu-12-04-vps
+
+mongod --configsvr --dbpath /temp/data --port 21000
+
+
+mongos  --configdb 192.168.48.225:21000,192.168.48.226:21000,192.168.48.227:21000  --port 20000
+
+mongod --shardsvr --replSet shard1 --port 22001 --dbpath /temp/data/shard1
+mongod --shardsvr --replSet shard2 --port 22002 --dbpath /temp/data/shard2
+mongod --shardsvr --replSet shard3 --port 22003 --dbpath /temp/data/shard3
