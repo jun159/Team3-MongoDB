@@ -197,6 +197,10 @@ sh.shardCollection("team3.customer", { c_w_id: 1})
 sh.shardCollection("team3.stockItem", { s_w_id : 1})
 sh.shardCollection("team3.orderOrderLine", { o_w_id: 1 })
 ```
+d. Check the status of the shard. The sharding keys should be in the 'shards'.
+```
+sh.status()
+```
 ### 7. Run benchmark
 The benchmark.sh script requires 2 arguments that represents the type of dataset (D8 or D40) and number of clients. </br>
 a) D8 datasets with 10 clients, run `bash benchmark.sh 8 10`.</br>
