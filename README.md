@@ -49,7 +49,7 @@ ctrl+A, D
 ### 5. Create Replica set
 a. Create replica set folder
 ```
-mkdir /temp/data/team3
+mkdir /temp/data
 ```
 b. Start the configuration server 
 ```
