@@ -91,7 +91,7 @@ hostname = {xcnd6.comp.nus.edu.sg, xcnd7.comp.nus.edu.sg, xcnd8.comp.nus.edu.sg}
 ```
 rs.initiate(
   {
-    _id : "config_rs",
+    _id : "rs-data",
     members: [
       { _id : 0, host : "xcnd6.comp.nus.edu.sg:21000" },
       { _id : 1, host : "xcnd7.comp.nus.edu.sg:21000" },
