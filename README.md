@@ -54,11 +54,11 @@ mkdir /temp/data/team3
 ```
 b. Start each member of the replica set with the appropriate options
 ```
-./mongod --replSet "team3" --dbpath /temp/data/team3
+./mongod --replSet "team3" --dbpath /temp/data/team3 --port 21000
 ```
 c. Connect to one of the members. ([X] = server number)
 ```
-./mongo --host xcnd[X].comp.nus.edu.sg
+./mongo --host xcnd[X].comp.nus.edu.sg --port 21000
 ```
 d. Initiate the replica set. ([X] = server number)
 ```
@@ -66,8 +66,8 @@ rs.initiate()
 ```
 e. Add the remaining members to the set
 ```
-rs.add("xcnd7.comp.nus.edu.sg")
-rs.add("xcnd8.comp.nus.edu.sg")
+rs.add("xcnd7.comp.nus.edu.sg:21000")
+rs.add("xcnd8.comp.nus.edu.sg:21000")
 ```
 
 ### 6. Setting up configuration server and query router for Three replica cluster
