@@ -111,6 +111,10 @@ g. Connect to the mongos.
 ```
 ./mongo --host xcnd[X].comp.nus.edu.sg --port 27017
 ```
+h. Add shard to cluster
+```
+sh.addShard( "team3/xcnd6.comp.nus.edu.sg:21000,xcnd7.comp.nus.edu.sg:21000,xcnd8.comp.nus.edu.sg:21000" )
+```
 
 ### 8. Project directory
 Before running the scripts, make sure the project folder is uploaded into the home folder. Change directory to the project folder to prepare for benchmarking.
