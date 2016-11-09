@@ -51,16 +51,20 @@ a. Create replica set folder
 ```
 mkdir /temp/data/team3
 ```
-b. Start each member of the shard replica set.
+b. Start the configuration server 
 ```
 ./mongod --configsvr --dbpath /temp/data --port 27018
-
+ctrl+c
 
 --------------- old: ./mongod --shardsvr --replSet "team3" --dbpath /temp/data/team3
 ./mongos --configdb 192.168.48.225:21000,192.168.48.226:21000,192.168.48.227:21000 --port 20000
 ./mongod --shardsvr --replSet shard1 --port 22001 --dbpath /temp/data/shard1 
 ./mongod --shardsvr --replSet shard2 --port 22002 --dbpath /temp/data/shard2 
 ./mongod --shardsvr --replSet shard3 --port 22003 --dbpath /temp/data/shard3
+```
+f. Connect mongos to the cluster
+```
+./mongos --configdb data/xcnd6.comp.nus.edu.sg:27019,xcnd7.comp.nus.edu.sg:27019,xcnd8.comp.nus.edu.sg:27019
 ```
 c. Connect to a member of the shard replica set. ([X] = server number)
 ```
@@ -82,10 +86,6 @@ rs.initiate(
 e. Check the status of connection. There should be three members.
 ```
 rs.status()
-```
-f. Connect mongos to the cluster
-```
---------------- old: ./mongos --configdb team3/xcnd6.comp.nus.edu.sg:27018,xcnd7.comp.nus.edu.sg:27018,xcnd8.comp.nus.edu.sg:27018 --port 27018
 ```
 
 ### 7. Project directory
