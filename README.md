@@ -67,25 +67,38 @@ f) D40 datasets with 40 clients, run `bash benchmark.sh 40 40`.</br>
 ### 1. Set up initial replica set
 a. Create replica set folder
 ```
-mkdir /temp/team3
+mkdir /temp/rs-data
 ```
-b. Start each member of the replica set with the appropriate options
+#### For each member of replica set:
+Start the mongodb server with the replica set
 ```
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
-./mongod --replSet "team3" --dbpath /temp/team3 --port 21000
+./mongod --replSet "team3" --dbpath /temp/rs-data --port 21000
 ```
-c. Connect to one of the members. ([X] = server number)
+#### Using one of the members:
+Connect using the mongo shell ([X] = server number)
 ```
 ./mongo --host xcnd[X].comp.nus.edu.sg --port 21000
 ```
-d. Initiate the replica set. ([X] = server number)
+Initiate the replica set via the mongo shell. ([X] = server number)
+
+Example: 
+
+Using port number = 21000
+
+hostname = {xcnd6.comp.nus.edu.sg, xcnd7.comp.nus.edu.sg, xcnd8.comp.nus.edu.sg}
+
 ```
-rs.initiate()
-```
-e. Add the remaining members to the set
-```
-rs.add("xcnd7.comp.nus.edu.sg:21000")
-rs.add("xcnd8.comp.nus.edu.sg:21000")
+rs.initiate(
+  {
+    _id : "config_rs",
+    members: [
+      { _id : 0, host : "xcnd6.comp.nus.edu.sg:21000" },
+      { _id : 1, host : "xcnd7.comp.nus.edu.sg:21000" },
+      { _id : 2, host : "xcnd8.comp.nus.edu.sg:21000" }
+    ]
+  }
+)
 ```
 
 ### 2. Set-up configuration server and query router
