@@ -65,22 +65,22 @@ f) D40 datasets with 40 clients, run `bash benchmark.sh 40 40`.</br>
 
 ## Running with three nodes
 ### 1. Set up initial replica set
+#### For each member of replica set:
 a. Create replica set folder
 ```
 mkdir /temp/rs-data
 ```
-#### For each member of replica set:
-Start the mongodb server with the replica set
+b. Start the mongodb server with the replica set
 ```
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 ./mongod --replSet "team3" --dbpath /temp/rs-data --port 21000
 ```
 #### Using one of the members:
-Connect using the mongo shell ([X] = server number)
+c. Connect using the mongo shell ([X] = server number)
 ```
 ./mongo --host xcnd[X].comp.nus.edu.sg --port 21000
 ```
-Initiate the replica set via the mongo shell. ([X] = server number)
+d. Initiate the replica set via the mongo shell. ([X] = server number)
 
 Example: 
 
@@ -102,16 +102,18 @@ rs.initiate(
 ```
 
 ### 2. Set-up configuration server and query router
+#### For each member of replica set:
 a. Create replica set folder
 ```
-mkdir /temp/data/config_rs
+mkdir /temp/config_rs
 ```
 b. Start the configuration server 
 ```
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
-./mongod --configsvr --replSet "config_rs" --dbpath /temp/data/config_rs --port 27019
+./mongod --configsvr --replSet "config_rs" --dbpath /temp/config_rs --port 27019
 ```
-c. Connect to one of the config servers. ([X] = server number)
+#### In one of the member:
+c. Connect to config server via mongo shell. ([X] = server number)
 ```
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 ./mongo --host xcnd[X].comp.nus.edu.sg --port 27019
