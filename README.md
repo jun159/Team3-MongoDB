@@ -46,7 +46,7 @@ screen
 ./mongod --dbpath /temp/data
 ctrl+A, D
 ```
-### 4. Set up initial replica set
+### 5. Set up initial replica set
 a. Create replica set folder
 ```
 mkdir /temp/data
@@ -70,7 +70,7 @@ rs.add("xcnd7.comp.nus.edu.sg")
 rs.add("xcnd8.comp.nus.edu.sg")
 ```
 
-### 5. Setting up configuration server and query router for Three replica cluster
+### 6. Setting up configuration server and query router for Three replica cluster
 a. Create replica set folder
 ```
 mkdir /temp/data
@@ -117,19 +117,19 @@ sh.addShard("team3/xcnd7.comp.nus.edu.sg:27017")
 sh.addShard("team3/xcnd8.comp.nus.edu.sg:27017")
 ```
 
-### 7. Project directory
+### 8. Project directory
 Before running the scripts, make sure the project folder is uploaded into the home folder. Change directory to the project folder to prepare for benchmarking.
 ```
 cd Team3-MongoDB 
 ```
-### 8. Bulkload data
+### Bulkload data
 The benchmark.sh script requires 2 arguments that represents the type of dataset (D8 or D40) and number of clients. </br>
 a) D8 datasets with 1 node, run `bash bulkload.sh 8 1`. </br>
 b) D8 datasets with 3 nodes, run `bash bulkload.sh 8 3`. </br>
 c) D40 datasets with 1 node, run `bash bulkload.sh 40 1`. </br>
 d) D40 datasets with 3 nodes, run `bash bulkload.sh 40 3`. 
 
-### 9. Run benchmark
+### Run benchmark
 The benchmark.sh script requires 2 arguments that represents the type of dataset (D8 or D40) and number of clients. </br>
 a) D8 datasets with 10 clients, run `bash benchmark.sh 8 10`.</br>
 b) D8 datasets with 20 clients, run `bash benchmark.sh 8 20`.</br>
