@@ -37,7 +37,7 @@ source .bash_profile
 ### 4. Starting MongoDB server using screen
 If you are starting server for first time, create a data folder in /temp:
 ```
-mkdir /temp/data
+mkdir /temp/data/team3
 ```
 Start mongo server and exit screen:
 ```
@@ -53,7 +53,7 @@ mkdir /temp/data
 ```
 b. Start the configuration server 
 ```
-./mongod --configsvr --dbpath /temp/data --port 27018
+./mongod --configsvr --replSet "team3" --dbpath /temp/data/team3
 ctrl+c
 
 --------------- old: ./mongod --shardsvr --replSet "team3" --dbpath /temp/data/team3
