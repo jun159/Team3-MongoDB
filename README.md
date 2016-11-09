@@ -62,13 +62,9 @@ ctrl+c
 ./mongod --shardsvr --replSet shard2 --port 22002 --dbpath /temp/data/shard2 
 ./mongod --shardsvr --replSet shard3 --port 22003 --dbpath /temp/data/shard3
 ```
-f. Connect mongos to the cluster
+c. Connect to one of the config servers. ([X] = server number)
 ```
-./mongos --configdb xcnd6.comp.nus.edu.sg:27018,xcnd7.comp.nus.edu.sg:27018,xcnd8.comp.nus.edu.sg:27018
-```
-c. Connect to a member of the shard replica set. ([X] = server number)
-```
-./mongo --host xcnd[X].comp.nus.edu.sg --port 27018
+./mongo --host xcnd[X].comp.nus.edu.sg --port 27019
 ```
 d. Initiate the replica set. ([X] = server number)
 ```
@@ -86,6 +82,10 @@ rs.initiate(
 e. Check the status of connection. There should be three members.
 ```
 rs.status()
+```
+f. Connect mongos to the cluster
+```
+./mongos --configdb xcnd6.comp.nus.edu.sg:27018,xcnd7.comp.nus.edu.sg:27018,xcnd8.comp.nus.edu.sg:27018
 ```
 
 ### 7. Project directory
