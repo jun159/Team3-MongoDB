@@ -78,7 +78,7 @@ mkdir /temp/data/config_rs
 ```
 b. Start the configuration server 
 ```
-./mongod --configsvr --replSet "config_rs" --dbpath /temp/data/config_rs
+./mongod --configsvr --replSet "config_rs" --dbpath /temp/data/config_rs --port 27019
 ```
 c. Connect to one of the config servers. ([X] = server number)
 ```
@@ -108,13 +108,6 @@ f. Connect mongos to the cluster
 g. Connect to the mongos.
 ```
 ./mongo --host xcnd[X].comp.nus.edu.sg --port 27017
-```
-### 7. XXXXXX
-h. Add Shards to the Cluster
-```
-sh.addShard("team3/xcnd6.comp.nus.edu.sg:27017")
-sh.addShard("team3/xcnd7.comp.nus.edu.sg:27017")
-sh.addShard("team3/xcnd8.comp.nus.edu.sg:27017")
 ```
 
 ### 8. Project directory
