@@ -54,7 +54,7 @@ mkdir /temp/data/team3
 ```
 b. Start each member of the replica set with the appropriate options
 ```
-./mongod --replSet "team3"
+./mongod --replSet "team3" --dbpath /temp/data/team3
 ```
 c. Connect to one of the members. ([X] = server number)
 ```
@@ -71,10 +71,14 @@ rs.add("xcnd8.comp.nus.edu.sg")
 ```
 
 ### 5. Setting up configuration server and query router for Three replica cluster
-
+a. Create replica set folder
+```
+mkdir /temp/data
+mkdir /temp/data/config_rs
+```
 b. Start the configuration server 
 ```
-./mongod --configsvr --replSet "team3" --dbpath /temp/data/team3
+./mongod --configsvr --replSet "config_rs" --dbpath /temp/data/config_rs
 ```
 c. Connect to one of the config servers. ([X] = server number)
 ```
@@ -84,7 +88,7 @@ d. Initiate the replica set. ([X] = server number)
 ```
 rs.initiate(
   {
-    _id : "team3",
+    _id : "config_rs",
     members: [
       { _id : 6, host : "xcnd6.comp.nus.edu.sg:27019" },
       { _id : 7, host : "xcnd7.comp.nus.edu.sg:27019" },
@@ -99,12 +103,13 @@ rs.status()
 ```
 f. Connect mongos to the cluster
 ```
-./mongos --configdb team3/xcnd6.comp.nus.edu.sg:27019,xcnd7.comp.nus.edu.sg:27019,xcnd8.comp.nus.edu.sg:27019
+./mongos --configdb config_rs/xcnd6.comp.nus.edu.sg:27019,xcnd7.comp.nus.edu.sg:27019,xcnd8.comp.nus.edu.sg:27019
 ```
 g. Connect to the mongos.
 ```
 ./mongo --host xcnd[X].comp.nus.edu.sg --port 27017
 ```
+### 7. XXXXXX
 h. Add Shards to the Cluster
 ```
 sh.addShard("team3/xcnd6.comp.nus.edu.sg:27017")
