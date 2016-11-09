@@ -87,9 +87,9 @@ g. Connect to the mongos.
 ```
 h. Add Shards to the Cluster
 ```
-sh.addSharding("xcnd6.comp.nus.edu.sg:27019")
-sh.addSharding("xcnd7.comp.nus.edu.sg:27019")
-sh.addSharding("xcnd8.comp.nus.edu.sg:27019")
+sh.addShard("xcnd6.comp.nus.edu.sg:27019")
+sh.addShard("xcnd7.comp.nus.edu.sg:27019")
+sh.addShard("xcnd8.comp.nus.edu.sg:27019")
 ```
 
 ### 7. Project directory
