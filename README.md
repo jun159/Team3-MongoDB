@@ -34,22 +34,27 @@ Save:
 shift + z + z
 source .bash_profile
 ```
-## Running on single-node
-### 1. Create a data folder in /temp.
+## Running on single node
+### 1. Create a data folder in /temp
 ```
 mkdir /temp/single-node
 ```
-### 2. Start mongodb server.
+### 2. Start mongodb server
 ```
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 ./mongod --dbpath /temp/single-node
 ```
-### 3. Bulkload database.
+### 3. Go to Project directory
+Before running the scripts, make sure the project folder is uploaded into the home folder. Change directory to the project folder to prepare for benchmarking.
+```
+cd Team3-MongoDB 
+```
+### 4. Bulkload database
 The benchmark.sh script requires 1 argument that represents the type of dataset (D8 or D40). </br>
 a) D8 datasets, run `bash bulkload.sh 8`. </br>
 c) D40 datasets, run `bash bulkload.sh 40`. </br>
 
-### 4. Run benchmark.
+### 5. Run benchmark
 The benchmark.sh script requires 2 arguments that represents the type of dataset (D8 or D40) and number of clients. </br>
 a) D8 datasets with 10 clients, run `bash benchmark.sh 8 10`.</br>
 b) D8 datasets with 20 clients, run `bash benchmark.sh 8 20`.</br>
@@ -62,13 +67,12 @@ f) D40 datasets with 40 clients, run `bash benchmark.sh 40 40`.</br>
 ### 1. Set up initial replica set
 a. Create replica set folder
 ```
-mkdir /temp/data
-mkdir /temp/data/team3
+mkdir /temp/team3
 ```
 b. Start each member of the replica set with the appropriate options
 ```
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
-./mongod --replSet "team3" --dbpath /temp/data/team3 --port 21000
+./mongod --replSet "team3" --dbpath /temp/team3 --port 21000
 ```
 c. Connect to one of the members. ([X] = server number)
 ```
@@ -84,7 +88,7 @@ rs.add("xcnd7.comp.nus.edu.sg:21000")
 rs.add("xcnd8.comp.nus.edu.sg:21000")
 ```
 
-### 6. Setting up configuration server and query router for Three replica cluster
+### 2. Set-up configuration server and query router
 a. Create replica set folder
 ```
 mkdir /temp/data/config_rs
@@ -116,6 +120,7 @@ e. Check the status of connection. There should be three members.
 ```
 rs.status()
 ```
+### 3. Add sharding to cluster
 f. Connect mongos to the cluster
 ```
 ./mongos --configdb config_rs/xcnd6.comp.nus.edu.sg:27019,xcnd7.comp.nus.edu.sg:27019,xcnd8.comp.nus.edu.sg:27019
@@ -129,11 +134,7 @@ h. Add shard to cluster
 sh.addShard( "team3/xcnd6.comp.nus.edu.sg:21000,xcnd7.comp.nus.edu.sg:21000,xcnd8.comp.nus.edu.sg:21000" )
 ```
 
-### 8. Project directory
-Before running the scripts, make sure the project folder is uploaded into the home folder. Change directory to the project folder to prepare for benchmarking.
-```
-cd Team3-MongoDB 
-```
+
 ### Bulkload data
 The benchmark.sh script requires 1 argument that represents the type of dataset (D8 or D40). </br>
 a) D8 datasets, run `bash bulkload.sh 8`. </br>
