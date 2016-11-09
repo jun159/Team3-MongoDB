@@ -71,9 +71,9 @@ rs.initiate(
   {
     _id : "team3",
     members: [
-      { _id : 6, host : "xcnd6.comp.nus.edu.sg:27017" },
-      { _id : 7, host : "xcnd7.comp.nus.edu.sg:27017" },
-      { _id : 8, host : "xcnd8.comp.nus.edu.sg:27017" }
+      { _id : 6, host : "xcnd6.comp.nus.edu.sg:27019" },
+      { _id : 7, host : "xcnd7.comp.nus.edu.sg:27019" },
+      { _id : 8, host : "xcnd8.comp.nus.edu.sg:27019" }
     ]
   }
 )
