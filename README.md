@@ -172,29 +172,25 @@ a) D8 datasets, run `bash bulkload.sh 8`. </br>
 c) D40 datasets, run `bash bulkload.sh 40`. </br>
 
 ### 6. Sharding collections
-#### Use primary member
-
-Example: Primary member hostname = xcnd6.comp.nus.edu.sg
+#### Use primary member (Example: hostname = xcnd6.comp.nus.edu.sg)
 
 a. Connect to mongos (27017) via mongo shell
 
 ```
 ./mongo --host xcnd6.comp.nus.edu.sg --port 27017
 ```
-b. Use these functions to shard the collections
+b. Enable sharding
+```
+sh.enableSharding("team3")
+```
+c. Add sharding keys
 ```
 sh.shardCollection("team3.warehouseDistrict", {w_id: 1})
 sh.shardCollection("team3.customer", { c_w_id: 1})
 sh.shardCollection(“team3.stockItem”, { s_w_id : 1})
 sh.shardCollection(“team3.orderOrderLine", { o_w_id: 1 })
 ```
-
-### 7. Add sharding keys
-The benchmark.sh script requires 1 argument that represents the type of dataset (D8 or D40). </br>
-a) D8 datasets, run `bash bulkload.sh 8`. </br>
-c) D40 datasets, run `bash bulkload.sh 40`. </br>
-
-### 8. Run benchmark
+### 7. Run benchmark
 The benchmark.sh script requires 2 arguments that represents the type of dataset (D8 or D40) and number of clients. </br>
 a) D8 datasets with 10 clients, run `bash benchmark.sh 8 10`.</br>
 b) D8 datasets with 20 clients, run `bash benchmark.sh 8 20`.</br>
@@ -203,7 +199,7 @@ d) D40 datasets with 10 clients, run `bash benchmark.sh 40 10`.</br>
 e) D40 datasets with 20 clients, run `bash benchmark.sh 40 20`.</br>
 f) D40 datasets with 40 clients, run `bash benchmark.sh 40 40`.</br>
 
-### 10. Stop server
+## Stop server
 ```
 killall -9 mongo
 killall -9 mongod
@@ -213,20 +209,4 @@ killall -9 mongod
 https://docs.mongodb.com/manual/tutorial/deploy-replica-set/ <br>
 https://docs.mongodb.com/manual/tutorial/deploy-shard-cluster/ <br>
 https://www.digitalocean.com/community/tutorials/how-to-create-a-sharded-cluster-in-mongodb-using-an-ubuntu-12-04-vps <br>
-
---------------- old: ./mongod --shardsvr --replSet "team3" --dbpath /temp/data/team3
-./mongos --configdb 192.168.48.225:21000,192.168.48.226:21000,192.168.48.227:21000 --port 20000
-./mongod --shardsvr --replSet shard1 --port 22001 --dbpath /temp/data/shard1 
-./mongod --shardsvr --replSet shard2 --port 22002 --dbpath /temp/data/shard2 
-./mongod --shardsvr --replSet shard3 --port 22003 --dbpath /temp/data/shard3
-
-mongod --configsvr --dbpath /temp/data --port 21000
-
-
-mongos  --configdb 192.168.48.225:21000,192.168.48.226:21000,192.168.48.227:21000  --port 20000
-
-./mongod --shardsvr --replSet test --port 22001 --dbpath /temp/data/shard1
-
-mongod --shardsvr --replSet test --port 22002 --dbpath /temp/data/shard2
-
-mongod --shardsvr --replSet test --port 22003 --dbpath /temp/data/shard3
+https://docs.mongodb.com/v3.2/tutorial/convert-replica-set-to-replicated-shard-cluster/ <br>
