@@ -64,7 +64,7 @@ e) D40 datasets with 20 clients, run `bash benchmark.sh 40 20`.</br>
 f) D40 datasets with 40 clients, run `bash benchmark.sh 40 40`.</br>
 
 ## Running with three nodes
-### 1. Set up initial replica set
+### 1. Set up initial replica set (21000)
 #### For each member of replica set:
 a. Create replica set folder
 ```
@@ -101,7 +101,7 @@ rs.initiate(
 )
 ```
 
-### 2. Set-up configuration server and query router
+### 2. Set-up configuration server (27019) and query router (27017)
 #### For each member of replica set:
 a. Create replica set folder
 ```
@@ -142,15 +142,19 @@ e. Check the status of connection. There should be three members in the set.
 rs.status()
 ```
 ### 3. Sharding
-#### Connect mongos to the cluster
+#### Using the primary member:
+
+Assuming hostnames = xcnd6.comp.nus.edu.sg, xcnd7.comp.nus.edu.sg, xcnd8.comp.nus.edu.sg
+
+a. Connect mongos to the cluster using port# 27019
 ```
 ./mongos --configdb config_rs/xcnd6.comp.nus.edu.sg:27019,xcnd7.comp.nus.edu.sg:27019,xcnd8.comp.nus.edu.sg:27019
 ```
-#### Connect to the mongos.
+b. Connect to the mongos via mongo shell using port # 27017
 ```
 ./mongo --host xcnd[X].comp.nus.edu.sg --port 27017
 ```
-#### Add shard to cluster
+c. Shard the initial replica set (21000) 
 ```
 sh.addShard( "rs-data/xcnd6.comp.nus.edu.sg:21000,xcnd7.comp.nus.edu.sg:21000,xcnd8.comp.nus.edu.sg:21000" )
 ```
