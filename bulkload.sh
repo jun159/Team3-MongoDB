@@ -2,11 +2,10 @@
 
 # The following script allows user to retrieve data and transactions
 # and load the data into the database by running the following:
-# bash bulkload.sh arg0 arg1
+# bash bulkload.sh arg0
 
 # The arguments can have the following values:
 #		arg0: Database - 8, 40
-#       arg1: Number of nodes - 1, 3
 
 # Conditions:
 #       Project (Team3-MongoDB) is in home directory
@@ -73,18 +72,11 @@ cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 
 ./mongo team3 --eval "printjson(db.dropDatabase())"
 
-if [ $1 == 8 ] && [ $2 == 1 ]
+if [ $1 == 8 ]
 then
     bash ~/Team3-MongoDB/mongoimport8-1.sh
-else if [ $1 == 8 ] && [ $2 == 3 ]
-then
-    bash ~/Team3-MongoDB/mongoimport8-3.sh
-else if [ $1 == 40 ] && [ $2 == 1 ]
-then
+else
     bash ~/Team3-MongoDB/mongoimport40-1.sh
-else if [ $1 == 40 ] && [ $2 == 3 ]
-then
-    bash ~/Team3-MongoDB/mongoimport40-3.sh
 fi
 
 cd ~/Team3-MongoDB
@@ -92,3 +84,9 @@ echo -ne "\nLoading item data into MongoDB.."
 mvn -q install &>/dev/null
 mvn -q compile &>/dev/null
 mvn -q exec:java -Dexec.mainClass="database.UpdateTables" -Dexec.args="$1"
+
+# Create shard keys
+sh.shardCollection("team3.warehouseDistrict", { w_id: 1 })
+sh.shardCollection("team3.customer", { c_w_id: 1 })
+sh.shardCollection("team3.stockItem", { s_w_id : 1 })
+sh.shardCollection("team3.orderOrderLine", { o_w_id: 1 })
