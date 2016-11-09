@@ -100,7 +100,10 @@ rs.initiate(
   }
 )
 ```
-
+e. Check the status of connection. There should be three members in the set.
+```
+rs.status()
+```
 ### 2. Set-up configuration server (27019) and query router (27017)
 #### For each member of replica set:
 a. Create replica set folder
