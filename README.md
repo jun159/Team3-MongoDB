@@ -70,12 +70,12 @@ a. Create replica set folder
 ```
 mkdir /temp/rs-data
 ```
-b. Start the mongodb server with the replica set
+b. Start the mongodb server
 ```
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 ./mongod --replSet "team3" --dbpath /temp/rs-data --port 21000
 ```
-#### Using one of the members:
+#### Use one of the members:
 c. Connect using the mongo shell ([X] = server number)
 ```
 ./mongo --host xcnd[X].comp.nus.edu.sg --port 21000
@@ -112,13 +112,19 @@ b. Start the configuration server
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 ./mongod --configsvr --replSet "config_rs" --dbpath /temp/config_rs --port 27019
 ```
-#### In one of the member:
+#### Use one of the members:
 c. Connect to config server via mongo shell. ([X] = server number)
 ```
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 ./mongo --host xcnd[X].comp.nus.edu.sg --port 27019
 ```
-d. Initiate the replica set. ([X] = server number)
+d. Initiate the replica set.
+
+Example: 
+
+Using port number = 21000
+
+hostname = {xcnd6.comp.nus.edu.sg, xcnd7.comp.nus.edu.sg, xcnd8.comp.nus.edu.sg}
 ```
 rs.initiate(
   {
