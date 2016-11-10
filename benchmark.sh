@@ -9,6 +9,7 @@
 #		arg1: Number of clients - 10, 20, 40
 
 # Run app
+cd ~/Team3-MongoDB
 echo -ne "Compiling project..."
 mvn -q install &>/dev/null
 mvn -q compile
