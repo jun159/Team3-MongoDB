@@ -238,12 +238,13 @@ c) D40 datasets, run `bash bulkload.sh 40`. </br>
 #### Choose option 1 or 2.
 
 #### Option 1: Using shard.sh
-##### Note: You need to change the hostname of the script before running
+##### Note: You need to set the hostname of the script before running
 ##### a. Go to Project directory
 ```
 cd Team3-MongoDB
 ```
 ##### b. Run shard script
+Specify hostname of the primary member as first argument
 ```
 bash shard.sh <hostname of primary member>
 ```
