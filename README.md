@@ -179,8 +179,6 @@ rs.status()
 ### 3. Sharding
 #### Using the primary member:
 
-Assuming hostnames = xcnd6.comp.nus.edu.sg, xcnd7.comp.nus.edu.sg, xcnd8.comp.nus.edu.sg
-
 ##### a. Connect mongos to the cluster using port# 27019
 
 Change the hostnames
