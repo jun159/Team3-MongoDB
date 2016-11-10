@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.bson.Document;
+
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -37,12 +39,27 @@ public class UpdateTables {
 		upData.updateOrderLine();
 		upData.updateOrder();
 		upData.combineOrderOrderLine();
-			
+		upData.addCompositeKey();
+		
 		log.write("End of the function\n");
 		log.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	
+	public void addCompositeKey(){
+		try {
+			log.write("creating composite index....\n");
+			log.flush();
+			db.getCollection("stockItem").createIndex(new BasicDBObject("s_w_id", 1).append("s_i_id", 1));
+			db.getCollection("customer").createIndex(new BasicDBObject("c_w_id", 1).append("c_d_id", 1).append("c_id ",1));
+			db.getCollection("orderOrderLine").createIndex(new BasicDBObject("o_w_id", 1).append("o_d_id", 1).append("o_id",1));
+		} catch (IOException e) {
+		e.printStackTrace();
+		}
+		
 	}
 	
 	//combine warehouse district
