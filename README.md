@@ -23,15 +23,14 @@ tar xzvf apache-maven-3.3.9-bin.tar.gz
 cd
 vim .bash_profile
 ```
-Add these lines into .bash_profile file:
+Paste these lines into .bash_profile file and save:
 ```
 export PATH=/temp/apache-maven-3.3.9/bin:$PATH
 export LANG=en_US.utf-8
 export LC_ALL=en_US.utf-8
 ```
-Save:
+Source the bash_profile file.
 ```
-shift + z + z
 source .bash_profile
 ```
 ## Running on single node
@@ -76,15 +75,32 @@ cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 ./mongod --replSet "rs-data" --dbpath /temp/rs-data --port 21000
 ```
 #### Use one of the members:
-c. Connect using the mongo shell ([X] = server number)
+c. Connect using the mongo shell
+Change the hostname
 ```
-./mongo --host xcnd[X].comp.nus.edu.sg --port 21000
+./mongo --host <hostname of one member> --port 21000
+```
+Example:
+```
+./mongo --host xcnd6.comp.nus.edu.sg --port 21000
 ```
 d. Initiate the replica set via the mongo shell. ([X] = server number)
 
-Example: 
+Change the hostnames
+```
+rs.initiate(
+  {
+    _id : "rs-data",
+    members: [
+      { _id : 0, host : "<hostname 1>:21000" },
+      { _id : 1, host : "<hostname 2>:21000" },
+      { _id : 2, host : "<hostname 3>:21000" }
+    ]
+  }
+)
+```
 
-Using port number = 21000
+Example: 
 
 hostname = {xcnd6.comp.nus.edu.sg, xcnd7.comp.nus.edu.sg, xcnd8.comp.nus.edu.sg}
 
@@ -116,16 +132,32 @@ cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 ./mongod --configsvr --replSet "config_rs" --dbpath /temp/config_rs --port 27019
 ```
 #### Use one of the members:
-c. Connect to config server via mongo shell. ([X] = server number)
+c. Connect to config server via mongo shell.
+Change the hostnames
 ```
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
-./mongo --host xcnd[X].comp.nus.edu.sg --port 27019
+./mongo --host <hostname of primary member> --port 27019
+```
+Example:
+```
+cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
+./mongo --host xcnd6.comp.nus.edu.sg --port 27019
 ```
 d. Initiate the replica set.
+```
+rs.initiate(
+  {
+    _id : "config_rs",
+    members: [
+      { _id : 6, host : "<hostname 1>:27019" },
+      { _id : 7, host : "<hostname 2>:27019" },
+      { _id : 8, host : "<hostname 3>:27019" }
+    ]
+  }
+)
+```
 
 Example: 
-
-Using port number = 27019
 
 hostname = {xcnd6.comp.nus.edu.sg, xcnd7.comp.nus.edu.sg, xcnd8.comp.nus.edu.sg}
 ```
@@ -150,11 +182,27 @@ rs.status()
 Assuming hostnames = xcnd6.comp.nus.edu.sg, xcnd7.comp.nus.edu.sg, xcnd8.comp.nus.edu.sg
 
 a. Connect mongos to the cluster using port# 27019
+
+Change the hostnames
+```
+cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
+./mongos --configdb config_rs/<hostname 1>:27019,<hostname 2>:27019,<hostname 3>:27019
+```
+Example:
+
+hostname = {xcnd6.comp.nus.edu.sg, xcnd7.comp.nus.edu.sg, xcnd8.comp.nus.edu.sg}
+
 ```
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 ./mongos --configdb config_rs/xcnd6.comp.nus.edu.sg:27019,xcnd7.comp.nus.edu.sg:27019,xcnd8.comp.nus.edu.sg:27019
 ```
 b. Connect to the mongos via mongo shell using port # 27017
+
+Use the primary member as the hostname
+```
+cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
+./mongo --host <hostname of primary member> --port 27017
+```
 
 Example: Primary member hostname = xcnd6.comp.nus.edu.sg
 
@@ -163,6 +211,12 @@ cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 ./mongo --host xcnd6.comp.nus.edu.sg --port 27017
 ```
 c. Add shards using the hostnames of the three members in the initial replica set (21000) 
+```
+sh.addShard( "rs-data/<hostname 1>:21000" )
+sh.addShard( "rs-data/<hostname 2>:21000" )
+sh.addShard( "rs-data/<hostname 3>:21000" )
+```
+Example:
 ```
 sh.addShard( "rs-data/xcnd6.comp.nus.edu.sg:21000" )
 sh.addShard( "rs-data/xcnd7.comp.nus.edu.sg:21000" )
@@ -183,10 +237,33 @@ a) D8 datasets, run `bash bulkload.sh 8`. </br>
 c) D40 datasets, run `bash bulkload.sh 40`. </br>
 
 ### 6. Sharding collections
-#### Use primary member (Example: hostname = xcnd6.comp.nus.edu.sg)
+Choose option 1 or 2.
+
+#### Option 1: Using shard.sh
+##### Note: You need to change the hostname of the script before running
+a. Go to Project directory
+```
+cd Team3-MongoDB
+vim shard.sh
+```
+a. Edit name of the variable `primary_hostname` to your primary member's hostname
+```
+primary_hostname = <hostname of primary member>
+```
+Example:
+```
+primary_hostname = 'xcnd6.comp.nus.edu.sg'
+```
+
+#### Option 2: Manually
 
 a. Connect to mongos (27017) via mongo shell
+```
+cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
+./mongo --host <hostname of primary member> --port 27017
+```
 
+Example: hostname of primary member = xcnd6.comp.nus.edu.sg
 ```
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 ./mongo --host xcnd6.comp.nus.edu.sg --port 27017
