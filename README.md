@@ -151,6 +151,7 @@ Assuming hostnames = xcnd6.comp.nus.edu.sg, xcnd7.comp.nus.edu.sg, xcnd8.comp.nu
 
 a. Connect mongos to the cluster using port# 27019
 ```
+cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 ./mongos --configdb config_rs/xcnd6.comp.nus.edu.sg:27019,xcnd7.comp.nus.edu.sg:27019,xcnd8.comp.nus.edu.sg:27019
 ```
 b. Connect to the mongos via mongo shell using port # 27017
@@ -158,6 +159,7 @@ b. Connect to the mongos via mongo shell using port # 27017
 Example: Primary member hostname = xcnd6.comp.nus.edu.sg
 
 ```
+cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 ./mongo --host xcnd6.comp.nus.edu.sg --port 27017
 ```
 c. Add shards using the hostnames of the three members in the initial replica set (21000) 
@@ -186,6 +188,7 @@ c) D40 datasets, run `bash bulkload.sh 40`. </br>
 a. Connect to mongos (27017) via mongo shell
 
 ```
+cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 ./mongo --host xcnd6.comp.nus.edu.sg --port 27017
 ```
 b. Enable sharding
@@ -214,6 +217,9 @@ In the databases, there should be shard keys and different indicated chunks for 
 
 ### 7. Run benchmark
 The benchmark.sh script requires 2 arguments that represents the type of dataset (D8 or D40) and number of clients. </br>
+```
+cd Team3-MongoDB
+```
 a) D8 datasets with 10 clients, run `bash benchmark.sh 8 10`.</br>
 b) D8 datasets with 20 clients, run `bash benchmark.sh 8 20`.</br>
 c) D8 datasets with 40 clients, run `bash benchmark.sh 8 40`.</br>
