@@ -65,17 +65,17 @@ f) D40 datasets with 40 clients, run `bash benchmark.sh 40 40`.</br>
 ## Running with three nodes
 ### 1. Set up initial replica set (21000)
 #### For each member of replica set:
-a. Create replica set folder
+##### a. Create replica set folder
 ```
 mkdir /temp/rs-data
 ```
-b. Start the mongodb server
+##### b. Start the mongodb server
 ```
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 ./mongod --replSet "rs-data" --dbpath /temp/rs-data --port 21000
 ```
 #### Use one of the members:
-c. Connect using the mongo shell
+##### c. Connect using the mongo shell
 Change the hostname
 ```
 ./mongo --host <hostname of one member> --port 21000
@@ -84,7 +84,7 @@ Example:
 ```
 ./mongo --host xcnd6.comp.nus.edu.sg --port 21000
 ```
-d. Initiate the replica set via the mongo shell. ([X] = server number)
+##### d. Initiate the replica set via the mongo shell. ([X] = server number)
 
 Change the hostnames
 ```
@@ -116,23 +116,23 @@ rs.initiate(
   }
 )
 ```
-e. Check the status of connection. There should be three members in the set.
+##### e. Check the status of connection. There should be three members in the set.
 ```
 rs.status()
 ```
 ### 2. Set-up configuration server (27019) and query router (27017)
 #### For each member of replica set:
-a. Create replica set folder
+##### a. Create replica set folder
 ```
 mkdir /temp/config_rs
 ```
-b. Start the configuration server 
+##### b. Start the configuration server 
 ```
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 ./mongod --configsvr --replSet "config_rs" --dbpath /temp/config_rs --port 27019
 ```
 #### Use one of the members:
-c. Connect to config server via mongo shell.
+##### c. Connect to config server via mongo shell.
 Change the hostnames
 ```
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
@@ -143,7 +143,7 @@ Example:
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 ./mongo --host xcnd6.comp.nus.edu.sg --port 27019
 ```
-d. Initiate the replica set.
+##### d. Initiate the replica set.
 ```
 rs.initiate(
   {
@@ -172,7 +172,7 @@ rs.initiate(
   }
 )
 ```
-e. Check the status of connection. There should be three members in the set.
+##### e. Check the status of connection. There should be three members in the set.
 ```
 rs.status()
 ```
@@ -181,7 +181,7 @@ rs.status()
 
 Assuming hostnames = xcnd6.comp.nus.edu.sg, xcnd7.comp.nus.edu.sg, xcnd8.comp.nus.edu.sg
 
-a. Connect mongos to the cluster using port# 27019
+##### a. Connect mongos to the cluster using port# 27019
 
 Change the hostnames
 ```
@@ -196,7 +196,7 @@ hostname = {xcnd6.comp.nus.edu.sg, xcnd7.comp.nus.edu.sg, xcnd8.comp.nus.edu.sg}
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 ./mongos --configdb config_rs/xcnd6.comp.nus.edu.sg:27019,xcnd7.comp.nus.edu.sg:27019,xcnd8.comp.nus.edu.sg:27019
 ```
-b. Connect to the mongos via mongo shell using port # 27017
+##### b. Connect to the mongos via mongo shell using port # 27017
 
 Use the primary member as the hostname
 ```
@@ -210,7 +210,7 @@ Example: Primary member hostname = xcnd6.comp.nus.edu.sg
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 ./mongo --host xcnd6.comp.nus.edu.sg --port 27017
 ```
-c. Add shards using the hostnames of the three members in the initial replica set (21000) 
+##### c. Add shards using the hostnames of the three members in the initial replica set (21000) 
 ```
 sh.addShard( "rs-data/<hostname 1>:21000" )
 sh.addShard( "rs-data/<hostname 2>:21000" )
@@ -222,7 +222,7 @@ sh.addShard( "rs-data/xcnd6.comp.nus.edu.sg:21000" )
 sh.addShard( "rs-data/xcnd7.comp.nus.edu.sg:21000" )
 sh.addShard( "rs-data/xcnd8.comp.nus.edu.sg:21000" )
 ```
-d. Check the status of the shard. There should be three hostnames in the 'shards' field.
+##### d. Check the status of the shard. There should be three hostnames in the 'shards' field.
 ```
 sh.status()
 ```
@@ -241,11 +241,11 @@ c) D40 datasets, run `bash bulkload.sh 40`. </br>
 
 #### Option 1: Using shard.sh
 ##### Note: You need to change the hostname of the script before running
-a. Go to Project directory
+##### a. Go to Project directory
 ```
 cd Team3-MongoDB
 ```
-b. Run shard script
+##### b. Run shard script
 ```
 bash shard.sh <hostname of primary member>
 ```
@@ -256,7 +256,7 @@ bash shard.sh xcnd6.comp.nus.edu.sg
 
 #### Option 2: Manually
 
-a. Connect to mongos (27017) via mongo shell
+##### a. Connect to mongos (27017) via mongo shell
 ```
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 ./mongo --host <hostname of primary member> --port 27017
@@ -267,11 +267,11 @@ Example: hostname of primary member = xcnd6.comp.nus.edu.sg
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 ./mongo --host xcnd6.comp.nus.edu.sg --port 27017
 ```
-b. Enable sharding
+##### b. Enable sharding
 ```
 sh.enableSharding("team3")
 ```
-c. Add sharding keys
+##### c. Add sharding keys
 ```
 sh.shardCollection("team3.warehouseDistrict", {w_id: 1})
 sh.shardCollection("team3.customer", { c_w_id: 1, c_d_id: 1, c_id: 1 })
@@ -281,11 +281,11 @@ sh.shardCollection("team3.warehouse", { w_id: 1 })
 sh.shardCollection("team3.order", { o_w_id: 1, o_d_id: 1, o_id: 1 })
 sh.shardCollection("team3.stock", { s_w_id : 1, s_i_id: 1 })
 ```
-d. Run balancer to partition the data:
+##### d. Run balancer to partition the data:
 ```
 sh.startBalancer()
 ```
-e. Check the status of the shards.
+##### e. Check the status of the shards.
 ```
 sh.status()
 ```
