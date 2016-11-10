@@ -160,7 +160,7 @@ Example: Primary member hostname = xcnd6.comp.nus.edu.sg
 ```
 ./mongo --host xcnd6.comp.nus.edu.sg --port 27017
 ```
-c. Shard the initial replica set (21000) 
+c. Add shards using the hostnames of the three members in the initial replica set (21000) 
 ```
 sh.addShard( "rs-data/xcnd6.comp.nus.edu.sg:21000" )
 sh.addShard( "rs-data/xcnd7.comp.nus.edu.sg:21000" )
