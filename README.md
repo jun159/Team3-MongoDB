@@ -193,12 +193,12 @@ sh.enableSharding("team3")
 c. Add sharding keys
 ```
 sh.shardCollection("team3.warehouseDistrict", {w_id: 1})
-sh.shardCollection("team3.customer", { c_w_id: 1})
-sh.shardCollection("team3.stockItem", { s_w_id : 1})
-sh.shardCollection("team3.orderOrderLine", { o_w_id: 1 })
+sh.shardCollection("team3.customer", { c_w_id: 1, c_d_id: 1, c_id: 1 })
+sh.shardCollection("team3.stockItem", { s_w_id : 1, s_i_id: 1})
+sh.shardCollection("team3.orderOrderLine", { o_w_id: 1, o_d_id: 1, o_id: 1 })
 sh.shardCollection("team3.warehouse", { w_id: 1 })
-sh.shardCollection("team3.order", { o_w_id: 1 })
-sh.shardCollection("team3.stock", { s_w_id : 1 })
+sh.shardCollection("team3.order", { o_w_id: 1, o_d_id: 1, o_id: 1 })
+sh.shardCollection("team3.stock", { s_w_id : 1, s_i_id: 1 })
 ```
 d. Run balancer to partition the data:
 ```
