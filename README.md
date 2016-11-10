@@ -237,22 +237,21 @@ a) D8 datasets, run `bash bulkload.sh 8`. </br>
 c) D40 datasets, run `bash bulkload.sh 40`. </br>
 
 ### 6. Sharding collections
-Choose option 1 or 2.
+#### Choose option 1 or 2.
 
 #### Option 1: Using shard.sh
 ##### Note: You need to change the hostname of the script before running
 a. Go to Project directory
 ```
 cd Team3-MongoDB
-vim shard.sh
 ```
-a. Edit name of the variable `primary_hostname` to your primary member's hostname
+b. Run shard script
 ```
-primary_hostname = <hostname of primary member>
+bash shard.sh <hostname of primary member>
 ```
 Example:
 ```
-primary_hostname = 'xcnd6.comp.nus.edu.sg'
+bash shard.sh xcnd6.comp.nus.edu.sg
 ```
 
 #### Option 2: Manually
