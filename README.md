@@ -200,10 +200,16 @@ sh.shardCollection("team3.warehouse", { w_id: 1 })
 sh.shardCollection("team3.order", { o_w_id: 1 })
 sh.shardCollection("team3.stock", { s_w_id : 1 })
 ```
-d. Check the status of the shard. The sharding keys should be in the 'shards'.
+d. Run balancer to partition the data:
+```
+sh.startBalancer()
+```
+e. Check the status of the shards.
 ```
 sh.status()
 ```
+In the databases, there should be shard keys and different indicated chunks for each collection.
+
 ### 7. Run benchmark
 The benchmark.sh script requires 2 arguments that represents the type of dataset (D8 or D40) and number of clients. </br>
 a) D8 datasets with 10 clients, run `bash benchmark.sh 8 10`.</br>
@@ -224,3 +230,4 @@ https://docs.mongodb.com/manual/tutorial/deploy-replica-set/ <br>
 https://docs.mongodb.com/manual/tutorial/deploy-shard-cluster/ <br>
 https://www.digitalocean.com/community/tutorials/how-to-create-a-sharded-cluster-in-mongodb-using-an-ubuntu-12-04-vps <br>
 https://docs.mongodb.com/v3.2/tutorial/convert-replica-set-to-replicated-shard-cluster/ <br>
+http://www.mongodbspain.com/en/2015/03/03/two-steps-to-shard-a-mongodb-collection/ <br>
