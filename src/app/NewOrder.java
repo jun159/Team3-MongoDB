@@ -254,7 +254,7 @@ public class NewOrder {
 		order.put("o_carrier_id", null);
 		order.put("o_ol_cnt", o_ol_cnt);
 		order.put("o_all_local", o_all_local);
-		order.put("o_entry_d", o_entry_id);
+		order.put("o_entry_d", o_entry_id.toString());
 		
 		for(int i = 0; i < num_items; i++) {
 			updateStock(w_id, d_id, item_number[i], supplier_warehouse[i], quantity[i]);
@@ -270,7 +270,7 @@ public class NewOrder {
 			orderline.put("ol_o_id", o_id);
 			orderline.put("ol_number", i);
 			orderline.put("ol_i_id", item_number[i]);
-			orderline.put("ol_delivery_d", null);
+			orderline.put("ol_delivery_d", "null");
 			orderline.put("ol_amount", item_amount);
 			orderline.put("ol_supply_w_id", supplier_warehouse[i]);
 			orderline.put("ol_quantity",  quantity[i]);
