@@ -46,6 +46,7 @@ cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 ### 3. Go to Project directory
 Before running the scripts, make sure the project folder is uploaded into the home folder. Change directory to the project folder to prepare for benchmarking.
 ```
+cd
 cd Team3-MongoDB 
 ```
 ### 4. Bulkload database
