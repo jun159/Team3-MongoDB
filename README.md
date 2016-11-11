@@ -64,7 +64,7 @@ e) D40 datasets with 20 clients, run `bash benchmark.sh 40 20`</br>
 f) D40 datasets with 40 clients, run `bash benchmark.sh 40 40`</br>
 
 ## Running with three nodes
-### 1. Set up initial replica set (21000)
+### 1. Set up initial replica set (Port# 21000)
 #### For each member of replica set:
 ##### a. Create replica set folder
 ```
@@ -85,7 +85,7 @@ Example:
 ```
 ./mongo --host xcnd6.comp.nus.edu.sg --port 21000
 ```
-##### d. Initiate the replica set via the mongo shell. ([X] = server number)
+##### d. Initiate the replica set via the mongo shell.
 
 Change the hostnames
 ```
@@ -121,7 +121,7 @@ rs.initiate(
 ```
 rs.status()
 ```
-### 2. Set-up configuration server (27019) and query router (27017)
+### 2. Set-up configuration server (Port# 27019) and query router (Port# 27017)
 #### For each member of replica set:
 ##### a. Create replica set folder
 ```
@@ -180,7 +180,7 @@ rs.status()
 ### 3. Sharding
 #### Using Primary member:
 
-##### a. Connect mongos to the cluster using port# 27019
+##### a. Connect mongos to the cluster (Port# 27019)
 
 Change the hostnames
 ```
@@ -195,7 +195,7 @@ hostname = {xcnd6.comp.nus.edu.sg, xcnd7.comp.nus.edu.sg, xcnd8.comp.nus.edu.sg}
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 ./mongos --configdb config_rs/xcnd6.comp.nus.edu.sg:27019,xcnd7.comp.nus.edu.sg:27019,xcnd8.comp.nus.edu.sg:27019
 ```
-##### b. Connect to the mongos via mongo shell using port # 27017
+##### b. Connect to the mongos via mongo shell (Port# 27017)
 
 Use the primary member as the hostname
 ```
@@ -209,7 +209,7 @@ Example: Primary member hostname = xcnd6.comp.nus.edu.sg
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 ./mongo --host xcnd6.comp.nus.edu.sg --port 27017
 ```
-##### c. Add shards using the hostnames of the three members in the initial replica set (21000) 
+##### c. Add shards using the hostnames of the three members in the initial replica set (Port# 21000) 
 ```
 sh.addShard( "rs-data/<hostname 1>:21000" )
 sh.addShard( "rs-data/<hostname 2>:21000" )
@@ -254,7 +254,7 @@ bash shard.sh xcnd6.comp.nus.edu.sg
 
 #### Option 2: Manually
 
-##### a. Connect to mongos (27017) via mongo shell
+##### a. Connect to mongos (Port# 27017) via mongo shell
 ```
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
 ./mongo --host <hostname of primary member> --port 27017 team3
