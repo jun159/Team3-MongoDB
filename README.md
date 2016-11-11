@@ -178,7 +178,7 @@ rs.initiate(
 rs.status()
 ```
 ### 3. Sharding
-#### Using the primary member:
+#### Using Primary member:
 
 ##### a. Connect mongos to the cluster using port# 27019
 
@@ -235,11 +235,9 @@ The benchmark.sh script requires 1 argument that represents the type of dataset 
 a) D8 datasets, run `bash bulkload.sh 8`</br>
 c) D40 datasets, run `bash bulkload.sh 40`</br>
 
-### 6. Sharding collections
-#### Choose option 1 or 2.
+### 6. Sharding collections (Choose option 1 or 2)
 
 #### Option 1: Using shard.sh
-##### Note: You need to set the hostname of the script before running
 ##### a. Go to Project directory
 ```
 cd Team3-MongoDB
