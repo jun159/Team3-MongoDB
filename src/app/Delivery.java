@@ -101,7 +101,7 @@ public class Delivery {
 			   		BasicDBObject  orderItem = new BasicDBObject();
 			   		orderItem.append("o_carrier_id",CARRIER_ID);
 			   		for(int i=0; i<orderLineNumber;i++){
-			   			orderItem.append("orderLine."+i+".ol_delivery_d",now);
+			   			orderItem.append("orderLine."+i+".ol_delivery_d",now.toString());
 			   		}
 			   		
 			   		BasicDBObject  updateObj = new BasicDBObject ();
