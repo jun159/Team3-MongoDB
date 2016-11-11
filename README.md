@@ -50,17 +50,17 @@ cd Team3-MongoDB
 ```
 ### 4. Bulkload database
 The benchmark.sh script requires 1 argument that represents the type of dataset (D8 or D40). </br>
-a) D8 datasets, run `bash bulkload.sh 8`. </br>
-c) D40 datasets, run `bash bulkload.sh 40`. </br>
+a) D8 datasets, run `bash bulkload.sh 8`</br>
+c) D40 datasets, run `bash bulkload.sh 40` </br>
 
 ### 5. Run benchmark
 The benchmark.sh script requires 2 arguments that represents the type of dataset (D8 or D40) and number of clients. </br>
-a) D8 datasets with 10 clients, run `bash benchmark.sh 8 10`.</br>
-b) D8 datasets with 20 clients, run `bash benchmark.sh 8 20`.</br>
-c) D8 datasets with 40 clients, run `bash benchmark.sh 8 40`.</br>
-d) D40 datasets with 10 clients, run `bash benchmark.sh 40 10`.</br>
-e) D40 datasets with 20 clients, run `bash benchmark.sh 40 20`.</br>
-f) D40 datasets with 40 clients, run `bash benchmark.sh 40 40`.</br>
+a) D8 datasets with 10 clients, run `bash benchmark.sh 8 10`</br>
+b) D8 datasets with 20 clients, run `bash benchmark.sh 8 20`</br>
+c) D8 datasets with 40 clients, run `bash benchmark.sh 8 40`</br>
+d) D40 datasets with 10 clients, run `bash benchmark.sh 40 10`</br>
+e) D40 datasets with 20 clients, run `bash benchmark.sh 40 20`</br>
+f) D40 datasets with 40 clients, run `bash benchmark.sh 40 40`</br>
 
 ## Running with three nodes
 ### 1. Set up initial replica set (21000)
@@ -231,8 +231,8 @@ cd Team3-MongoDB
 ```
 ### 5. Bulkload data
 The benchmark.sh script requires 1 argument that represents the type of dataset (D8 or D40). </br>
-a) D8 datasets, run `bash bulkload.sh 8`. </br>
-c) D40 datasets, run `bash bulkload.sh 40`. </br>
+a) D8 datasets, run `bash bulkload.sh 8`</br>
+c) D40 datasets, run `bash bulkload.sh 40`</br>
 
 ### 6. Sharding collections
 #### Choose option 1 or 2.
@@ -295,12 +295,12 @@ The benchmark.sh script requires 2 arguments that represents the type of dataset
 ```
 cd Team3-MongoDB
 ```
-a) D8 datasets with 10 clients, run `bash benchmark.sh 8 10`.</br>
-b) D8 datasets with 20 clients, run `bash benchmark.sh 8 20`.</br>
-c) D8 datasets with 40 clients, run `bash benchmark.sh 8 40`.</br>
-d) D40 datasets with 10 clients, run `bash benchmark.sh 40 10`.</br>
-e) D40 datasets with 20 clients, run `bash benchmark.sh 40 20`.</br>
-f) D40 datasets with 40 clients, run `bash benchmark.sh 40 40`.</br>
+a) D8 datasets with 10 clients, run `bash benchmark.sh 8 10`</br>
+b) D8 datasets with 20 clients, run `bash benchmark.sh 8 20`</br>
+c) D8 datasets with 40 clients, run `bash benchmark.sh 8 40`</br>
+d) D40 datasets with 10 clients, run `bash benchmark.sh 40 10`</br>
+e) D40 datasets with 20 clients, run `bash benchmark.sh 40 20`</br>
+f) D40 datasets with 40 clients, run `bash benchmark.sh 40 40`</br>
 
 ## Stop server
 ```
