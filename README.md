@@ -258,13 +258,13 @@ bash shard.sh xcnd6.comp.nus.edu.sg
 ##### a. Connect to mongos (27017) via mongo shell
 ```
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
-./mongo --host <hostname of primary member> --port 27017
+./mongo --host <hostname of primary member> --port 27017 team3
 ```
 
 Example: hostname of primary member = xcnd6.comp.nus.edu.sg
 ```
 cd /temp/mongodb-linux-x86_64-rhel70-3.2.10/bin
-./mongo --host xcnd6.comp.nus.edu.sg --port 27017
+./mongo --host xcnd6.comp.nus.edu.sg --port 27017 team3
 ```
 ##### b. Enable sharding
 ```
